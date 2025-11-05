@@ -32,8 +32,9 @@
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
   .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
   .band{background:var(--azul-escuro);color:#fff;border-radius:10px;padding:8px 10px;font-weight:900;margin:-6px -6px 12px;letter-spacing:.3px}
-  .kpi-valor{font-size:32px;font-weight:900;margin:6px 0;color:#000} /* todos os KPIs em 32px */
+  .kpi-valor{font-size:32px;font-weight:900;margin:6px 0;color:#000}
   .kpi-valor.center{text-align:center}
+  .sub-title{margin:12px 0 4px;font-weight:800;color:#0f172a}
   .table{width:100%;border-collapse:collapse;font-size:14px;background:#fff}
   .table th,.table td{border-bottom:1px solid #dbe5f1;padding:6px 8px;text-align:left}
   .table th{background:#f4f8fd}
@@ -47,35 +48,34 @@
 
 <div class="wrap">
   <div class="grid">
-    <!-- KPIs PL / Subordinação -->
+    <!-- PL (agora com Índice de Subordinação dentro) -->
     <div class="card col-6">
       <div class="band">Patrimônio Líquido (PL)</div>
       <div id="kpiPL" class="kpi-valor">–</div>
-      <!-- Composição PL -->
-      <h4 style="margin:8px 0 6px">Composição PL</h4>
+
+      <div class="sub-title">Índice de Subordinação</div>
+      <div id="kpiSubInline" class="kpi-valor">–</div>
+
+      <h4 style="margin:12px 0 6px">Composição PL</h4>
       <table class="table" id="tbPL">
         <thead><tr><th>Classe</th><th class="center">Valor</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
 
-    <div class="card col-6">
-      <div class="band">Índice de Subordinação</div>
-      <div id="kpiSub" class="kpi-valor center">–</div>
-    </div>
-
-    <!-- Caixa / Valor disponível -->
+    <!-- Caixa -->
     <div class="card col-6">
       <div class="band">Caixa</div>
       <div id="kpiCaixa" class="kpi-valor">–</div>
-      <!-- Composição Caixa -->
-      <h4 style="margin:8px 0 6px">Composição Caixa</h4>
+
+      <h4 style="margin:12px 0 6px">Composição Caixa</h4>
       <table class="table" id="tbCaixa">
         <thead><tr><th>Alocação de Caixa</th><th class="center">Valor</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
 
+    <!-- Valor disponível para Risco Sacado -->
     <div class="card col-6">
       <div class="band">Valor Disponível para Risco Sacado</div>
       <div id="kpiRisco" class="kpi-valor center">–</div>
@@ -107,17 +107,24 @@
 </div>
 
 <script>
-const DEFAULT_JSON = 'data/carteira_power_bi.json';
+/* =========================
+   CONFIG & helpers
+   ========================= */
+const DEFAULT_JSON = 'data/carteira_power_bi.json'; // arquivo do próprio repositório
 
+// Paleta solicitada
 const C_TOTAL      = '#004065';
 const C_CCB        = '#286DAC';
 const C_DUP        = '#666666';
 const C_RISCO      = '#118DFF';
 const C_AZUL_CLARO = '#A7CCEB';
 
+// Moeda completa (sem Mi/mil)
 const brlFull = v => (Number(v)||0).toLocaleString('pt-BR',{
   style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2
 });
+
+// Data label (abreviado) para os gráficos
 function fmt1(n){
   n = Number(n)||0;
   const abs = Math.abs(n);
@@ -129,8 +136,10 @@ const pct1 = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',minimum
 
 let chartPrincipal, chartShare, chartReceber;
 
+/* Utils de filtro */
 function byFiltro(rows, nome){ return rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase()); }
 function totalByFiltro(rows, nome){ const arr=byFiltro(rows, nome); return arr.length? (Number(arr[0]["Valor"])||0): 0; }
+/* Ordem Duplicatas, CCB, Risco Sacado */
 function itensOps(rows, nome){
   const ops = ['Duplicatas','CCB','Risco Sacado'];
   const subset = rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase());
@@ -140,20 +149,26 @@ function itensOps(rows, nome){
   });
 }
 
+/* =========================
+   KPIs
+   ========================= */
 function setKpis(rows){
-  document.getElementById("kpiPL").textContent    = brlFull(totalByFiltro(rows,"Patrimônio Líquido (PL)"));
-  document.getElementById("kpiSub").textContent   = pct1(totalByFiltro(rows,"Índice de Subordinação Total"));
-  document.getElementById("kpiCaixa").textContent = brlFull(totalByFiltro(rows,"(=) Caixa e Disponibilidades"));
-  document.getElementById("kpiRisco").textContent = brlFull(totalByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
+  document.getElementById("kpiPL").textContent       = brlFull(totalByFiltro(rows,"Patrimônio Líquido (PL)"));
+  document.getElementById("kpiSubInline").textContent= pct1(totalByFiltro(rows,"Índice de Subordinação Total"));
+  document.getElementById("kpiCaixa").textContent    = brlFull(totalByFiltro(rows,"(=) Caixa e Disponibilidades"));
+  document.getElementById("kpiRisco").textContent    = brlFull(totalByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
 }
 
+/* =========================
+   Gráficos
+   ========================= */
 function commonBarOptions(maxVal){
   return {
     plugins:{
       legend:{ display:false },
       datalabels:{
         anchor:'end', align:'end',
-        formatter:(v)=> 'R$ ' + fmt1(v),
+        formatter:(v)=> 'R$ ' + fmt1(v),   // unidade R$
         color:'#000', font:{weight:'700', size:16}
       },
       tooltip:{ callbacks:{ label:(c)=> 'R$ ' + fmt1(c.parsed.y) } }
@@ -235,6 +250,9 @@ function renderReceber(rows){
   });
 }
 
+/* =========================
+   Prazo Médio (tabela)
+   ========================= */
 function renderPrazo(rows){
   const totalPrazoRows = byFiltro(rows,"Prazo Médio total");
   const totalPrazo = totalPrazoRows.length ? Number(totalPrazoRows[0]["Valor"])||0 : 0;
@@ -251,6 +269,9 @@ function renderPrazo(rows){
   });
 }
 
+/* =========================
+   Tabelas de composição
+   ========================= */
 function renderTabelaPL(rows){
   const labels = [
     {disp:'Cotas Sêniors',  keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']},
@@ -288,6 +309,9 @@ function renderTabelaCaixa(rows){
   });
 }
 
+/* =========================
+   Normalização e carga
+   ========================= */
 function normalizeRows(rows){
   return rows.map(r => ({
     "Overview FIDC NX Boats": r["Overview FIDC NX Boats"] ?? r["Overview"] ?? r["Descrição"] ?? r["Descricao"] ?? r["desc"] ?? null,
@@ -300,7 +324,7 @@ function normalizeRows(rows){
 }
 
 function loadDefault(){
-  const bust = `?v=${Date.now()}`;
+  const bust = `?v=${Date.now()}`; // evita cache
   fetch(DEFAULT_JSON + bust)
     .then(r => { if(!r.ok) throw new Error('Falha ao ler JSON'); return r.json(); })
     .then(raw => {
