@@ -39,6 +39,16 @@
   .table th,.table td{border-bottom:1px solid #dbe5f1;padding:6px 8px;text-align:left}
   .table th{background:#f4f8fd}
   .center{text-align:center}
+
+  /* data-base */
+  .dbase{
+    margin-top:8px;
+    font-size:12px;
+    color:#334155;
+    opacity:.85;
+    text-align:right;
+  }
+
   .col-12{grid-column:span 12}.col-8{grid-column:span 12}.col-4{grid-column:span 12}.col-6{grid-column:span 12}
   @media(min-width:1000px){.col-8{grid-column:span 8}.col-4{grid-column:span 4}.col-6{grid-column:span 6}}
 </style>
@@ -48,7 +58,7 @@
 
 <div class="wrap">
   <div class="grid">
-    <!-- PL (agora com Índice de Subordinação dentro) -->
+    <!-- PL (com Índice de Subordinação dentro) -->
     <div class="card col-6">
       <div class="band">Patrimônio Líquido (PL)</div>
       <div id="kpiPL" class="kpi-valor">–</div>
@@ -61,6 +71,7 @@
         <thead><tr><th>Classe</th><th class="center">Valor</th></tr></thead>
         <tbody></tbody>
       </table>
+      <div class="dbase" id="dbPL">Data-base: –</div>
     </div>
 
     <!-- Caixa -->
@@ -73,28 +84,33 @@
         <thead><tr><th>Alocação de Caixa</th><th class="center">Valor</th></tr></thead>
         <tbody></tbody>
       </table>
+      <div class="dbase" id="dbCaixa">Data-base: –</div>
     </div>
 
     <!-- Valor disponível para Risco Sacado -->
     <div class="card col-6">
       <div class="band">Valor Disponível para Risco Sacado</div>
       <div id="kpiRisco" class="kpi-valor center">–</div>
+      <div class="dbase" id="dbRisco">Data-base: –</div>
     </div>
 
     <!-- Principal Alocado (barras) + Share (rosca) -->
     <div class="card col-8">
       <div class="band">Principal Alocado por Operação</div>
       <canvas id="chartPrincipal" height="140"></canvas>
+      <div class="dbase" id="dbPrincipal">Data-base: –</div>
     </div>
     <div class="card col-4">
       <div class="band">Share da Carteira</div>
       <canvas id="chartShare" height="140"></canvas>
+      <div class="dbase" id="dbShare">Data-base: –</div>
     </div>
 
     <!-- Valores a Receber + Prazo Médio -->
     <div class="card col-8">
       <div class="band">Valores a Receber por Operação</div>
       <canvas id="chartReceber" height="140"></canvas>
+      <div class="dbase" id="dbReceber">Data-base: –</div>
     </div>
     <div class="card col-4">
       <div class="band">Prazo Médio por Operação</div>
@@ -102,6 +118,7 @@
         <thead><tr><th>Operação</th><th class="center">Dias</th></tr></thead>
         <tbody id="tbodyPrazo"></tbody>
       </table>
+      <div class="dbase" id="dbPrazo">Data-base: –</div>
     </div>
   </div>
 </div>
@@ -139,6 +156,12 @@ let chartPrincipal, chartShare, chartReceber;
 /* Utils de filtro */
 function byFiltro(rows, nome){ return rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase()); }
 function totalByFiltro(rows, nome){ const arr=byFiltro(rows, nome); return arr.length? (Number(arr[0]["Valor"])||0): 0; }
+function firstDateByFiltro(rows, nome, fallbackNome=null){
+  let arr = byFiltro(rows, nome);
+  if ((!arr || !arr.length) && fallbackNome) arr = byFiltro(rows, fallbackNome);
+  const row = arr.find(r => r['Data Base']) || arr[0];
+  return row && row['Data Base'] ? String(row['Data Base']) : null;
+}
 /* Ordem Duplicatas, CCB, Risco Sacado */
 function itensOps(rows, nome){
   const ops = ['Duplicatas','CCB','Risco Sacado'];
@@ -153,10 +176,22 @@ function itensOps(rows, nome){
    KPIs
    ========================= */
 function setKpis(rows){
-  document.getElementById("kpiPL").textContent       = brlFull(totalByFiltro(rows,"Patrimônio Líquido (PL)"));
-  document.getElementById("kpiSubInline").textContent= pct1(totalByFiltro(rows,"Índice de Subordinação Total"));
-  document.getElementById("kpiCaixa").textContent    = brlFull(totalByFiltro(rows,"(=) Caixa e Disponibilidades"));
-  document.getElementById("kpiRisco").textContent    = brlFull(totalByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
+  document.getElementById("kpiPL").textContent        = brlFull(totalByFiltro(rows,"Patrimônio Líquido (PL)"));
+  document.getElementById("kpiSubInline").textContent = pct1(totalByFiltro(rows,"Índice de Subordinação Total"));
+  document.getElementById("kpiCaixa").textContent     = brlFull(totalByFiltro(rows,"(=) Caixa e Disponibilidades"));
+  document.getElementById("kpiRisco").textContent     = brlFull(totalByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
+
+  // Datas por caixa
+  setDB('dbPL',      firstDateByFiltro(rows,"Patrimônio Líquido (PL)"));
+  setDB('dbCaixa',   firstDateByFiltro(rows,"(=) Caixa e Disponibilidades"));
+  setDB('dbRisco',   firstDateByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
+  setDB('dbPrincipal', firstDateByFiltro(rows,"Principal Alocado"));
+  setDB('dbShare',     firstDateByFiltro(rows,"Share da Carteira"));
+  setDB('dbReceber',   firstDateByFiltro(rows,"Valores a Receber"));
+  setDB('dbPrazo',     firstDateByFiltro(rows,"Prazo Médio total","Prazo Médio"));
+}
+function setDB(id, dateStr){
+  document.getElementById(id).textContent = `Data-base: ${dateStr || '–'}`;
 }
 
 /* =========================
