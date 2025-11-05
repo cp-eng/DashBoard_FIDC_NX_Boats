@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dashboard FIDC NX Boats (JSON)</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{--bg:#0c4a6e;--panel:#e2f0fb;--card:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f6f7fb;color:#0f172a}
+  header{background:var(--bg);color:#fff;padding:16px 20px;font-weight:800;font-size:20px}
+  .wrap{max-width:1200px;margin:18px auto;padding:0 12px}
+  .controls{display:grid;grid-template-columns:1fr;gap:10px;background:var(--card);border-radius:12px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .controls input, .controls textarea, .controls button{width:100%;padding:10px;border-radius:8px;border:1px solid #cbd5e1}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:14px}
+  .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .band{background:var(--panel);border-radius:10px;padding:6px 10px;font-weight:700;margin-bottom:8px;color:#0c4a6e}
+  .kpi{font-size:44px;font-weight:900;margin:6px 0}
+  .sub{margin:0;color:#334155}
+  .col-12{grid-column:span 12}.col-8{grid-column:span 12}.col-4{grid-column:span 12}
+  .col-6{grid-column:span 12}
+  @media(min-width:900px){.col-8{grid-column:span 8}.col-4{grid-column:span 4}.col-6{grid-column:span 6}}
+  table{width:100%;border-collapse:collapse}
+  th,td{border-bottom:1px solid #e2e8f0;padding:6px 8px;text-align:left;font-size:14px}
+  th{background:#f1f5f9}
+  .center{text-align:center}
+</style>
+</head>
+<body>
+<header>Dashboard FIDC NX Boats — visualização via JSON</header>
+<div class="wrap">
+  <!-- Controles de entrada do JSON -->
+  <div class="controls">
+    <div><strong>Modo 1 — URL do JSON (raw do GitHub):</strong>
+      <input id="urlInput" placeholder="https://raw.githubusercontent.com/usuario/repo/main/data/carteira_power_bi.json"/>
+      <button id="btnUrl">Carregar por URL</button>
+    </div>
+    <div><strong>Modo 2 — Selecionar arquivo JSON:</strong>
+      <input type="file" id="fileInput" accept="application/json"/>
+    </div>
+    <div><strong>Modo 3 — Colar JSON:</strong>
+      <textarea id="jsonText" rows="6" placeholder='Cole aqui o conteúdo do JSON...'></textarea>
+      <button id="btnPaste">Carregar do texto colado</button>
+    </div>
+  </div>
+
+  <!-- Faixas/kpis principais -->
+  <div class="grid">
+    <div class="card col-6">
+      <div class="band">Patrimônio Líquido (PL)</div>
+      <div class="kpi" id="kpiPL">–</div>
+      <p class="sub">Patrimônio Líquido FIDC NX Boats</p>
+    </div>
+    <div class="card col-6">
+      <div class="band">Índice de Subordinação</div>
+      <div class="kpi" id="kpiSub">–</div>
+      <p class="sub">Índice de Subordinação Cotas Sênior</p>
+    </div>
+
+    <div class="card col-6">
+      <div class="band">Caixa</div>
+      <div class="kpi" id="kpiCaixa">–</div>
+      <p class="sub">Caixa e disponibilidades</p>
+    </div>
+    <div class="card col-6">
+      <div class="band">Valor Disponível para Risco Sacado</div>
+      <div class="kpi" id="kpiRisco">–</div>
+      <p class="sub">Disponível para alocação em Risco Sacado</p>
+    </div>
+
+    <div class="card col-8">
+      <div class="band">Principal Alocado por Operação</div>
+      <canvas id="chartPrincipal" height="120"></canvas>
+    </div>
+    <div class="card col-4">
+      <div class="band">Share da Carteira</div>
+      <canvas id="chartShare" height="120"></canvas>
+    </div>
+
+    <div class="card col-8">
+      <div class="band">Valores a Receber por Operação</div>
+      <canvas id="chartReceber" height="120"></canvas>
+    </div>
+    <div class="card col-4">
+      <div class="band">Prazo Médio por Operação (dias corridos)</div>
+      <table>
+        <thead><tr><th>Operação</th><th class="center">Dias</th></tr></thead>
+        <tbody id="tbodyPrazo"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const brl = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:2});
+const pct = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',maximumFractionDigits:2});
+let chartPrincipal, chartShare, chartReceber;
+
+function byFiltro(rows, nome){ return rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase()); }
+function totalByFiltro(rows, nome){ const arr=byFiltro(rows, nome); return arr.length? (arr[0]["Valor"]||0): 0; }
+function itensByFiltro(rows, nome){
+  return rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase())
+             .map(r => ({label: r["Overview FIDC NX Boats"], valor: Number(r["Valor"])||0}));
+}
+function itensOps(rows, nome, ops=['CCB','Duplicatas','Risco Sacado']){
+  const subset = itensByFiltro(rows, nome);
+  // mantém ordem desejada CCB/Duplicatas/Risco
+  return ops.map(op => {
+    const it = subset.find(x=> String(x.label).toLowerCase()===op.toLowerCase());
+    return {label: op, valor: it? it.valor : 0};
+  });
+}
+
+function setKpis(rows){
+  document.getElementById("kpiPL").textContent   = brl(totalByFiltro(rows,"Patrimônio Líquido (PL)"));
+  document.getElementById("kpiSub").textContent  = pct(totalByFiltro(rows,"Índice de Subordinação Total"));
+  document.getElementById("kpiCaixa").textContent= brl(totalByFiltro(rows,"(=) Caixa e Disponibilidades"));
+  document.getElementById("kpiRisco").textContent= brl(totalByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
+}
+
+function renderCharts(rows){
+  const principal = itensOps(rows, "Principal Alocado");  // CCB, Duplicatas, Risco
+  const valores   = itensOps(rows, "Valores a Receber");
+  const share     = itensOps(rows, "Share da Carteira");
+
+  // Principal (barras simples)
+  const ctxP = document.getElementById('chartPrincipal');
+  if(chartPrincipal) chartPrincipal.destroy();
+  chartPrincipal = new Chart(ctxP, {
+    type:'bar',
+    data:{ labels: principal.map(x=>x.label), datasets:[{label:'R$', data: principal.map(x=>x.valor)}] },
+    options:{ responsive:true, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>brl(c.parsed.y)}}},
+              scales:{y:{beginAtZero:true}}}
+  });
+
+  // Share (rosca)
+  const ctxS = document.getElementById('chartShare');
+  if(chartShare) chartShare.destroy();
+  chartShare = new Chart(ctxS, {
+    type:'doughnut',
+    data:{ labels: share.map(x=>x.label), datasets:[{data: share.map(x=>x.valor)}] },
+    options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>`${c.label}: ${pct(c.parsed)}`}}} }
+  });
+
+  // Valores a Receber (barras)
+  const ctxR = document.getElementById('chartReceber');
+  if(chartReceber) chartReceber.destroy();
+  chartReceber = new Chart(ctxR, {
+    type:'bar',
+    data:{ labels: valores.map(x=>x.label), datasets:[{label:'R$', data: valores.map(x=>x.valor)}] },
+    options:{ responsive:true, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>brl(c.parsed.y)}}},
+              scales:{y:{beginAtZero:true}}}
+  });
+
+  // Prazo médio (tabela)
+  const prazo = itensOps(rows, "Prazo Médio", ['(=) Prazo Médio','CCB','Duplicatas','Risco Sacado']);
+  const tb = document.getElementById("tbodyPrazo"); tb.innerHTML="";
+  prazo.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${r.label}</td><td class="center">${(r.valor||0).toFixed(2)}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function normalizeRows(rows){
+  // garante chaves esperadas caso venham com nomes equivalentes
+  return rows.map(r => ({
+    "Overview FIDC NX Boats": r["Overview FIDC NX Boats"] ?? r["Overview"] ?? r["Descricao"] ?? r["Descrição"] ?? r["desc"] ?? null,
+    "Unid": r["Unid"] ?? r["Unidade"] ?? null,
+    "Fonte": r["Fonte"] ?? null,
+    "Data Base": r["Data Base"] ?? r["DataBase"] ?? r["Data"] ?? null,
+    "Valor": (typeof r["Valor"]==="string") ? Number(r["Valor"].replace(/\./g,'').replace(',','.')) : (r["Valor"]??0),
+    "Filtro": r["Filtro"] ?? r["Categoria"] ?? null
+  }));
+}
+
+async function loadFromUrl(){
+  const url = document.getElementById('urlInput').value.trim();
+  if(!url) return alert("Informe a URL do JSON.");
+  const res = await fetch(url);
+  if(!res.ok) return alert("Não foi possível carregar a URL.");
+  const raw = await res.json();
+  const rows = normalizeRows(raw);
+  setKpis(rows); renderCharts(rows);
+}
+
+function loadFromFile(file){
+  const fr = new FileReader();
+  fr.onload = e => {
+    try{
+      const raw = JSON.parse(e.target.result);
+      const rows = normalizeRows(raw);
+      setKpis(rows); renderCharts(rows);
+    }catch(err){ alert("JSON inválido."); }
+  };
+  fr.readAsText(file, "utf-8");
+}
+
+function loadFromText(){
+  const txt = document.getElementById('jsonText').value.trim();
+  if(!txt) return alert("Cole o JSON no campo de texto.");
+  try{
+    const raw = JSON.parse(txt);
+    const rows = normalizeRows(raw);
+    setKpis(rows); renderCharts(rows);
+  }catch(err){ alert("JSON inválido."); }
+}
+
+document.getElementById('btnUrl').onclick = loadFromUrl;
+document.getElementById('fileInput').onchange = e=>{
+  if(e.target.files && e.target.files[0]) loadFromFile(e.target.files[0]);
+};
+document.getElementById('btnPaste').onclick = loadFromText;
+</script>
+</body>
+</html>
