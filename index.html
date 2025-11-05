@@ -196,7 +196,7 @@ function setKpis(rows){
   setDB('dbRisco', firstDateByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
 
   // Datas “forçadas” a usar Principal Alocado
-  const principalDate = firstDateByFiltro(rows,"Principal Alocado");
+  const principalDate = firstDateByFiltro(rows,"Principal Alocado Total");
   setDB('dbPrincipal', principalDate);
   setDB('dbShare',     principalDate);
   setDB('dbReceber',   principalDate);
