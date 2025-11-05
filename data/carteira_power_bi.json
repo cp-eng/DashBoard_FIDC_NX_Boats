@@ -17,7 +17,7 @@
     "Overview FIDC NX Boats":"Patrimônio Líquido (PL)",
     "Unid":"R$",
     "Fonte":null,
-    "Data Base":null,
+    "Data Base":"2025-11-29T00:00:00.000",
     "Valor":23428092.4200000018,
     "Filtro":"Patrimônio Líquido (PL)"
   },
@@ -28,7 +28,7 @@
     "Overview FIDC NX Boats":"(=) Principal Alocado",
     "Unid":"R$ ",
     "Fonte":null,
-    "Data Base":null,
+    "Data Base":"2025-11-05T00:00:00.000",
     "Valor":12239067.9100000039,
     "Filtro":"Principal Alocado Total"
   },
@@ -39,7 +39,7 @@
     "Overview FIDC NX Boats":"CCB",
     "Unid":"R$ ",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":4570695.2300000014,
     "Filtro":"Principal Alocado"
   },
@@ -50,7 +50,7 @@
     "Overview FIDC NX Boats":"Duplicatas",
     "Unid":"R$ ",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":6780320.3000000017,
     "Filtro":"Principal Alocado"
   },
@@ -61,7 +61,7 @@
     "Overview FIDC NX Boats":"Risco Sacado",
     "Unid":"R$ ",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":888052.3800000002,
     "Filtro":"Principal Alocado"
   },
@@ -72,7 +72,7 @@
     "Overview FIDC NX Boats":"(=) Valores a Receber",
     "Unid":"R$ ",
     "Fonte":null,
-    "Data Base":null,
+    "Data Base":"2025-11-05T00:00:00.000",
     "Valor":13888394.7800000012,
     "Filtro":"Valores a Receber Total"
   },
@@ -83,7 +83,7 @@
     "Overview FIDC NX Boats":"CCB",
     "Unid":"R$ ",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":5498408.1800000006,
     "Filtro":"Valores a Receber"
   },
@@ -94,7 +94,7 @@
     "Overview FIDC NX Boats":"Duplicatas",
     "Unid":"R$ ",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":7409522.870000001,
     "Filtro":"Valores a Receber"
   },
@@ -105,7 +105,7 @@
     "Overview FIDC NX Boats":"Risco Sacado",
     "Unid":"R$ ",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":980463.7299999996,
     "Filtro":"Valores a Receber"
   },
@@ -116,7 +116,7 @@
     "Overview FIDC NX Boats":"(=) Share da Carteira",
     "Unid":"%",
     "Fonte":null,
-    "Data Base":null,
+    "Data Base":"2025-11-05T00:00:00.000",
     "Valor":1.0,
     "Filtro":"Share da Carteira Total"
   },
@@ -127,7 +127,7 @@
     "Overview FIDC NX Boats":"CCB",
     "Unid":"%",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":0.3734512516,
     "Filtro":"Share da Carteira"
   },
@@ -138,7 +138,7 @@
     "Overview FIDC NX Boats":"Duplicatas",
     "Unid":"%",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":0.5539899239,
     "Filtro":"Share da Carteira"
   },
@@ -149,7 +149,7 @@
     "Overview FIDC NX Boats":"Risco Sacado",
     "Unid":"%",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":0.0725588245,
     "Filtro":"Share da Carteira"
   },
@@ -160,7 +160,7 @@
     "Overview FIDC NX Boats":"(=) Prazo Médio ",
     "Unid":"Dias Corridos",
     "Fonte":null,
-    "Data Base":null,
+    "Data Base":"2025-11-05T00:00:00.000",
     "Valor":158.725402357,
     "Filtro":"Prazo Médio Total"
   },
@@ -171,7 +171,7 @@
     "Overview FIDC NX Boats":"CCB",
     "Unid":"Dias Corridos",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":248.1646138043,
     "Filtro":"Prazo Médio"
   },
@@ -182,7 +182,7 @@
     "Overview FIDC NX Boats":"Duplicatas",
     "Unid":"Dias Corridos",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":112.6670033494,
     "Filtro":"Prazo Médio"
   },
@@ -193,7 +193,7 @@
     "Overview FIDC NX Boats":"Risco Sacado",
     "Unid":"Dias Corridos",
     "Fonte":"Estoque FIDC Limine",
-    "Data Base":"2025-10-31T00:00:00.000",
+    "Data Base":null,
     "Valor":50.0508674612,
     "Filtro":"Prazo Médio"
   },
@@ -215,7 +215,7 @@
     "Overview FIDC NX Boats":"Índice de Subordinação Cotas Sênior ",
     "Unid":"%",
     "Fonte":null,
-    "Data Base":null,
+    "Data Base":"2025-11-29T00:00:00.000",
     "Valor":0.5129530892,
     "Filtro":"Índice de Subordinação Total"
   },
@@ -226,7 +226,7 @@
     "Overview FIDC NX Boats":"Cotas Sêniores",
     "Unid":"R$ ",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":11410580.0399999991,
     "Filtro":"Cotas Sêniores"
   },
@@ -237,7 +237,7 @@
     "Overview FIDC NX Boats":"Cotas Mezanino",
     "Unid":"R$ ",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":3576062.71,
     "Filtro":"Cotas Mezanino"
   },
@@ -248,7 +248,7 @@
     "Overview FIDC NX Boats":"Cotas Subordinadas",
     "Unid":"R$ ",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":8441449.6699999999,
     "Filtro":"Cotas Subordinadas"
   },
@@ -270,7 +270,7 @@
     "Overview FIDC NX Boats":"(=) Caixa e Disponibilidades",
     "Unid":"R$",
     "Fonte":null,
-    "Data Base":null,
+    "Data Base":"2025-11-29T00:00:00.000",
     "Valor":10536279.1500000004,
     "Filtro":"(=) Caixa e Disponibilidades"
   },
@@ -281,7 +281,7 @@
     "Overview FIDC NX Boats":"(+) Kanastra",
     "Unid":"R$",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":1340935.53,
     "Filtro":"(+) Conta Kanastra (Cobrança)"
   },
@@ -292,7 +292,7 @@
     "Overview FIDC NX Boats":"(+) Santander",
     "Unid":"R$",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":300014.22,
     "Filtro":"(+) Conta Santander (Zeragem)"
   },
@@ -303,7 +303,7 @@
     "Overview FIDC NX Boats":"(+) Liquidez Imediata",
     "Unid":"R$",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":8895329.4000000004,
     "Filtro":"(+) Aplicações Liquidez Imediata"
   },
@@ -314,7 +314,7 @@
     "Overview FIDC NX Boats":"(=) Valor Disponível para Risco Sacado",
     "Unid":"R$",
     "Fonte":null,
-    "Data Base":null,
+    "Data Base":"2025-11-29T00:00:00.000",
     "Valor":283352.2409999998,
     "Filtro":"(=) Valor Disponível para Risco Sacado"
   },
@@ -325,7 +325,7 @@
     "Overview FIDC NX Boats":"(-) Principal Alocado em Risco Sacado",
     "Unid":"R$",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":-888052.3800000002,
     "Filtro":"(-) Principal Alocado em Risco Sacado"
   },
@@ -336,7 +336,7 @@
     "Overview FIDC NX Boats":"(+) Limite de Principal Alocado Risco Sacado",
     "Unid":"R$",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":1171404.621,
     "Filtro":"(+) Limite de Principal Alocado Risco Sacado"
   },
@@ -347,7 +347,7 @@
     "Overview FIDC NX Boats":"Patrimônio Líquido (PL)",
     "Unid":"R$ ",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":23428092.4200000018,
     "Filtro":"Patrimônio Líquido (PL)"
   },
@@ -358,7 +358,7 @@
     "Overview FIDC NX Boats":"% PL Máximo Alocado em Risco Sacado",
     "Unid":"%",
     "Fonte":"Carteira Diária Limine",
-    "Data Base":"2025-10-29T00:00:00.000",
+    "Data Base":null,
     "Valor":0.05,
     "Filtro":"% PL Máximo Alocado em Risco Sacado"
   },
