@@ -43,9 +43,9 @@
   /* data-base */
   .dbase{
     margin-top:8px;
-    font-size:12px;
+    font-size:14px;      /* equivalente solicitado */
     color:#334155;
-    opacity:.85;
+    opacity:.9;
     text-align:right;
   }
 
@@ -129,7 +129,7 @@
    ========================= */
 const DEFAULT_JSON = 'data/carteira_power_bi.json'; // arquivo do próprio repositório
 
-// Paleta solicitada
+// Paleta
 const C_TOTAL      = '#004065';
 const C_CCB        = '#286DAC';
 const C_DUP        = '#666666';
@@ -141,7 +141,7 @@ const brlFull = v => (Number(v)||0).toLocaleString('pt-BR',{
   style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2
 });
 
-// Data label (abreviado) para os gráficos
+// Data label abreviada p/ gráficos
 function fmt1(n){
   n = Number(n)||0;
   const abs = Math.abs(n);
@@ -150,6 +150,15 @@ function fmt1(n){
   return n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
 }
 const pct1 = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1});
+
+// Converte "2025-11-05T00:00:00.000" -> "05/11/2025"
+function toBRDate(str){
+  if(!str) return '–';
+  const d = new Date(str);
+  if(!isNaN(d)) return d.toLocaleDateString('pt-BR');
+  // fallback: já está dd/mm/aaaa, retorna como veio
+  return String(str);
+}
 
 let chartPrincipal, chartShare, chartReceber;
 
@@ -173,7 +182,7 @@ function itensOps(rows, nome){
 }
 
 /* =========================
-   KPIs
+   KPIs + datas
    ========================= */
 function setKpis(rows){
   document.getElementById("kpiPL").textContent        = brlFull(totalByFiltro(rows,"Patrimônio Líquido (PL)"));
@@ -181,17 +190,20 @@ function setKpis(rows){
   document.getElementById("kpiCaixa").textContent     = brlFull(totalByFiltro(rows,"(=) Caixa e Disponibilidades"));
   document.getElementById("kpiRisco").textContent     = brlFull(totalByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
 
-  // Datas por caixa
-  setDB('dbPL',      firstDateByFiltro(rows,"Patrimônio Líquido (PL)"));
-  setDB('dbCaixa',   firstDateByFiltro(rows,"(=) Caixa e Disponibilidades"));
-  setDB('dbRisco',   firstDateByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
-  setDB('dbPrincipal', firstDateByFiltro(rows,"Principal Alocado"));
-  setDB('dbShare',     firstDateByFiltro(rows,"Share da Carteira"));
-  setDB('dbReceber',   firstDateByFiltro(rows,"Valores a Receber"));
-  setDB('dbPrazo',     firstDateByFiltro(rows,"Prazo Médio total","Prazo Médio"));
+  // Datas próprias
+  setDB('dbPL',    firstDateByFiltro(rows,"Patrimônio Líquido (PL)"));
+  setDB('dbCaixa', firstDateByFiltro(rows,"(=) Caixa e Disponibilidades"));
+  setDB('dbRisco', firstDateByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
+
+  // Datas “forçadas” a usar Principal Alocado
+  const principalDate = firstDateByFiltro(rows,"Principal Alocado");
+  setDB('dbPrincipal', principalDate);
+  setDB('dbShare',     principalDate);
+  setDB('dbReceber',   principalDate);
+  setDB('dbPrazo',     principalDate);
 }
 function setDB(id, dateStr){
-  document.getElementById(id).textContent = `Data-base: ${dateStr || '–'}`;
+  document.getElementById(id).textContent = `Data-base: ${toBRDate(dateStr)}`;
 }
 
 /* =========================
@@ -203,7 +215,7 @@ function commonBarOptions(maxVal){
       legend:{ display:false },
       datalabels:{
         anchor:'end', align:'end',
-        formatter:(v)=> 'R$ ' + fmt1(v),   // unidade R$
+        formatter:(v)=> 'R$ ' + fmt1(v),
         color:'#000', font:{weight:'700', size:16}
       },
       tooltip:{ callbacks:{ label:(c)=> 'R$ ' + fmt1(c.parsed.y) } }
@@ -309,7 +321,7 @@ function renderPrazo(rows){
    ========================= */
 function renderTabelaPL(rows){
   const labels = [
-    {disp:'Cotas Sêniors',  keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']},
+    {disp:'Cotas Sêniores',  keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']}, /* corrigido */
     {disp:'Cotas Subordinadas', keys:['Cotas Subordinadas']},
     {disp:'Cotas Mezanino', keys:['Cotas Mezanino','Cotas MezAnino']}
   ];
