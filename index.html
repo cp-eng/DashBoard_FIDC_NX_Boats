@@ -32,8 +32,8 @@
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
   .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
   .band{background:var(--azul-escuro);color:#fff;border-radius:10px;padding:8px 10px;font-weight:900;margin:-6px -6px 12px;letter-spacing:.3px}
-  .kpi-valor{font-size:64px;font-weight:900;margin:6px 0;color:#000}
-  .kpi-valor.center{text-align:center}            /* centraliza valores específicos */
+  .kpi-valor{font-size:32px;font-weight:900;margin:6px 0;color:#000} /* todos os KPIs em 32px */
+  .kpi-valor.center{text-align:center}
   .table{width:100%;border-collapse:collapse;font-size:14px;background:#fff}
   .table th,.table td{border-bottom:1px solid #dbe5f1;padding:6px 8px;text-align:left}
   .table th{background:#f4f8fd}
@@ -61,7 +61,7 @@
 
     <div class="card col-6">
       <div class="band">Índice de Subordinação</div>
-      <div id="kpiSub" class="kpi-valor center">–</div> <!-- centralizado -->
+      <div id="kpiSub" class="kpi-valor center">–</div>
     </div>
 
     <!-- Caixa / Valor disponível -->
@@ -78,7 +78,7 @@
 
     <div class="card col-6">
       <div class="band">Valor Disponível para Risco Sacado</div>
-      <div id="kpiRisco" class="kpi-valor center">–</div> <!-- centralizado -->
+      <div id="kpiRisco" class="kpi-valor center">–</div>
     </div>
 
     <!-- Principal Alocado (barras) + Share (rosca) -->
@@ -107,24 +107,17 @@
 </div>
 
 <script>
-/* =========================
-   CONFIG & helpers
-   ========================= */
-const DEFAULT_JSON = 'data/carteira_power_bi.json'; // arquivo do próprio repositório
+const DEFAULT_JSON = 'data/carteira_power_bi.json';
 
-// Paleta solicitada
 const C_TOTAL      = '#004065';
 const C_CCB        = '#286DAC';
 const C_DUP        = '#666666';
 const C_RISCO      = '#118DFF';
 const C_AZUL_CLARO = '#A7CCEB';
 
-// Formata MOEDA COMPLETA: R$ 23.428.092,42
 const brlFull = v => (Number(v)||0).toLocaleString('pt-BR',{
   style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2
 });
-
-// Data label dos gráficos (abreviado com 1 casa) — mantém como estava
 function fmt1(n){
   n = Number(n)||0;
   const abs = Math.abs(n);
@@ -136,10 +129,8 @@ const pct1 = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',minimum
 
 let chartPrincipal, chartShare, chartReceber;
 
-/* Utils de filtro */
 function byFiltro(rows, nome){ return rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase()); }
 function totalByFiltro(rows, nome){ const arr=byFiltro(rows, nome); return arr.length? (Number(arr[0]["Valor"])||0): 0; }
-/* Ordem Duplicatas, CCB, Risco Sacado */
 function itensOps(rows, nome){
   const ops = ['Duplicatas','CCB','Risco Sacado'];
   const subset = rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase());
@@ -149,9 +140,6 @@ function itensOps(rows, nome){
   });
 }
 
-/* =========================
-   KPIs
-   ========================= */
 function setKpis(rows){
   document.getElementById("kpiPL").textContent    = brlFull(totalByFiltro(rows,"Patrimônio Líquido (PL)"));
   document.getElementById("kpiSub").textContent   = pct1(totalByFiltro(rows,"Índice de Subordinação Total"));
@@ -159,16 +147,13 @@ function setKpis(rows){
   document.getElementById("kpiRisco").textContent = brlFull(totalByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
 }
 
-/* =========================
-   Gráficos
-   ========================= */
 function commonBarOptions(maxVal){
   return {
     plugins:{
       legend:{ display:false },
       datalabels:{
         anchor:'end', align:'end',
-        formatter:(v)=> 'R$ ' + fmt1(v),   // unidade R$
+        formatter:(v)=> 'R$ ' + fmt1(v),
         color:'#000', font:{weight:'700', size:16}
       },
       tooltip:{ callbacks:{ label:(c)=> 'R$ ' + fmt1(c.parsed.y) } }
@@ -223,7 +208,7 @@ function renderShare(rows){
             const p = total? (v/total) : 0;
             return pct1(p);
           },
-          color:'#fff', font:{weight:'700', size:16}  /* labels brancos 16px */
+          color:'#fff', font:{weight:'700', size:16}
         },
         tooltip:{ callbacks:{ label:(c)=> `${c.label}: ${pct1(c.parsed)}` } }
       }
@@ -245,20 +230,17 @@ function renderReceber(rows){
   chartReceber = new Chart(ctx,{
     type:'bar',
     data:{ labels, datasets:[{ data, backgroundColor: colors }] },
-    options: commonBarOptions(maxVal),  // mantém escala correta para não “cortar”
+    options: commonBarOptions(maxVal),
     plugins:[ChartDataLabels]
   });
 }
 
-/* =========================
-   Prazo Médio (tabela)
-   ========================= */
 function renderPrazo(rows){
   const totalPrazoRows = byFiltro(rows,"Prazo Médio total");
   const totalPrazo = totalPrazoRows.length ? Number(totalPrazoRows[0]["Valor"])||0 : 0;
 
   const linhas = [
-    {label:'(=) Prazo Médio', valor: totalPrazo}, // corrigido
+    {label:'(=) Prazo Médio', valor: totalPrazo},
     ...itensOps(rows,"Prazo Médio").filter(x=>x.label!=='(=) Prazo Médio')
   ];
   const tb = document.getElementById("tbodyPrazo"); tb.innerHTML="";
@@ -269,9 +251,6 @@ function renderPrazo(rows){
   });
 }
 
-/* =========================
-   Tabelas de composição
-   ========================= */
 function renderTabelaPL(rows){
   const labels = [
     {disp:'Cotas Sêniors',  keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']},
@@ -309,9 +288,6 @@ function renderTabelaCaixa(rows){
   });
 }
 
-/* =========================
-   Normalização e carga
-   ========================= */
 function normalizeRows(rows){
   return rows.map(r => ({
     "Overview FIDC NX Boats": r["Overview FIDC NX Boats"] ?? r["Overview"] ?? r["Descrição"] ?? r["Descricao"] ?? r["desc"] ?? null,
@@ -324,7 +300,7 @@ function normalizeRows(rows){
 }
 
 function loadDefault(){
-  const bust = `?v=${Date.now()}`; // evita cache
+  const bust = `?v=${Date.now()}`;
   fetch(DEFAULT_JSON + bust)
     .then(r => { if(!r.ok) throw new Error('Falha ao ler JSON'); return r.json(); })
     .then(raw => {
@@ -340,7 +316,7 @@ function loadDefault(){
     .catch(err => alert('Erro ao carregar JSON: ' + err.message));
 }
 
-Chart.register(ChartDataLabels); // registra plugin
+Chart.register(ChartDataLabels);
 window.addEventListener('DOMContentLoaded', loadDefault);
 </script>
 </body>
