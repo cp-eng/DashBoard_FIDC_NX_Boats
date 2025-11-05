@@ -96,6 +96,8 @@
 <script>
 const brl = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:2});
 const pct = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',maximumFractionDigits:2});
+const DEFAULT_JSON = 'data/carteira_power_bi.json'; // Caminho relativo ao repositório
+
 let chartPrincipal, chartShare, chartReceber;
 
 function byFiltro(rows, nome){ return rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase()); }
@@ -106,7 +108,6 @@ function itensByFiltro(rows, nome){
 }
 function itensOps(rows, nome, ops=['CCB','Duplicatas','Risco Sacado']){
   const subset = itensByFiltro(rows, nome);
-  // mantém ordem desejada CCB/Duplicatas/Risco
   return ops.map(op => {
     const it = subset.find(x=> String(x.label).toLowerCase()===op.toLowerCase());
     return {label: op, valor: it? it.valor : 0};
@@ -121,11 +122,10 @@ function setKpis(rows){
 }
 
 function renderCharts(rows){
-  const principal = itensOps(rows, "Principal Alocado");  // CCB, Duplicatas, Risco
+  const principal = itensOps(rows, "Principal Alocado");
   const valores   = itensOps(rows, "Valores a Receber");
   const share     = itensOps(rows, "Share da Carteira");
 
-  // Principal (barras simples)
   const ctxP = document.getElementById('chartPrincipal');
   if(chartPrincipal) chartPrincipal.destroy();
   chartPrincipal = new Chart(ctxP, {
@@ -135,7 +135,6 @@ function renderCharts(rows){
               scales:{y:{beginAtZero:true}}}
   });
 
-  // Share (rosca)
   const ctxS = document.getElementById('chartShare');
   if(chartShare) chartShare.destroy();
   chartShare = new Chart(ctxS, {
@@ -144,7 +143,6 @@ function renderCharts(rows){
     options:{ responsive:true, plugins:{tooltip:{callbacks:{label:c=>`${c.label}: ${pct(c.parsed)}`}}} }
   });
 
-  // Valores a Receber (barras)
   const ctxR = document.getElementById('chartReceber');
   if(chartReceber) chartReceber.destroy();
   chartReceber = new Chart(ctxR, {
@@ -154,7 +152,6 @@ function renderCharts(rows){
               scales:{y:{beginAtZero:true}}}
   });
 
-  // Prazo médio (tabela)
   const prazo = itensOps(rows, "Prazo Médio", ['(=) Prazo Médio','CCB','Duplicatas','Risco Sacado']);
   const tb = document.getElementById("tbodyPrazo"); tb.innerHTML="";
   prazo.forEach(r=>{
@@ -165,7 +162,6 @@ function renderCharts(rows){
 }
 
 function normalizeRows(rows){
-  // garante chaves esperadas caso venham com nomes equivalentes
   return rows.map(r => ({
     "Overview FIDC NX Boats": r["Overview FIDC NX Boats"] ?? r["Overview"] ?? r["Descricao"] ?? r["Descrição"] ?? r["desc"] ?? null,
     "Unid": r["Unid"] ?? r["Unidade"] ?? null,
@@ -208,11 +204,31 @@ function loadFromText(){
   }catch(err){ alert("JSON inválido."); }
 }
 
+/* === NOVO: carrega automaticamente o JSON do repositório === */
+function loadDefault(){
+  const bust = `?v=${Date.now()}`;
+  document.getElementById('urlInput').value = DEFAULT_JSON;
+  return fetch(DEFAULT_JSON + bust)
+    .then(r => {
+      if(!r.ok) throw new Error('Falha ao ler data/carteira_power_bi.json');
+      return r.json();
+    })
+    .then(raw => {
+      const rows = normalizeRows(raw);
+      setKpis(rows);
+      renderCharts(rows);
+    })
+    .catch(err => alert('Erro ao carregar JSON padrão: ' + err.message));
+}
+
 document.getElementById('btnUrl').onclick = loadFromUrl;
 document.getElementById('fileInput').onchange = e=>{
   if(e.target.files && e.target.files[0]) loadFromFile(e.target.files[0]);
 };
 document.getElementById('btnPaste').onclick = loadFromText;
+
+/* === NOVO: chama loadDefault() automaticamente === */
+window.addEventListener('DOMContentLoaded', loadDefault);
 </script>
 </body>
 </html>
