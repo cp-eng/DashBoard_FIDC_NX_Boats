@@ -332,47 +332,7 @@ function renderPrazo(rows){
 }
 
 /* =========================
-   Tabelas de composição
-   ========================= */
-function renderTabelaPL(rows){
-  const labels = [
-    {disp:'Cotas Sêniores',  keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']},
-    {disp:'Cotas Subordinadas', keys:['Cotas Subordinadas']},
-    {disp:'Cotas Mezanino', keys:['Cotas Mezanino','Cotas MezAnino']}
-  ];
-  const tbody = document.querySelector('#tbPL tbody'); tbody.innerHTML='';
-  labels.forEach(l=>{
-    const row = rows.find(r =>
-      l.keys.map(k=>k.toLowerCase()).includes(String(r['Overview FIDC NX Boats']||'').toLowerCase()) &&
-      (!r['Unid'] || String(r['Unid']).toLowerCase().includes('r$'))
-    );
-    const val = row ? Number(row['Valor'])||0 : 0;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${l.disp}</td><td class="center">${brlFull(val)}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-function renderTabelaCaixa(rows){
-  const map = [
-    {disp:'(+) Liquidez Imediata', keys:['(+) Aplicações Liquidez Imediata','(+) Liquidez Imediata','Liquidez Imediata']},
-    {disp:'(+) Kanastra',          keys:['(+) Conta Kanastra (Cobrança)','(+) Kanastra']},
-    {disp:'(+) Santander',         keys:['(+) Conta Santander (Zeragem)','(+) Santander']}
-  ];
-  const tbody = document.querySelector('#tbCaixa tbody'); tbody.innerHTML='';
-  map.forEach(l=>{
-    const row = rows.find(r =>
-      l.keys.map(k=>k.toLowerCase()).includes(String(r['Overview FIDC NX Boats']||'').toLowerCase())
-    );
-    const val = row ? Number(row['Valor'])||0 : 0;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${l.disp}</td><td class="center">${brlFull(val)}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-/* =========================
-   NOVO: Cronograma Risco Sacado (LINHA)
+   NOVO: Cronograma Risco Sacado (LINHA + ÁREA)
    ========================= */
 // Lê 31 linhas após o marcador "Cronograma de amortização Risco Sacado"
 // Eixo X: datas em "Overview FIDC NX Boats" | Eixo Y: Principal EoP em "Data Base"
@@ -406,6 +366,7 @@ function renderCronograma(rawRows){
   if(chartCronRS) chartCronRS.destroy();
 
   const lineColor = '#004065';
+  const fillColor = 'rgba(167,204,235,0.35)'; // azul-claro com transparência
   const maxVal = values.length ? Math.max(...values) : 0;
 
   chartCronRS = new Chart(ctx,{
@@ -415,17 +376,18 @@ function renderCronograma(rawRows){
       datasets:[{
         data: values,
         borderColor: lineColor,
-        backgroundColor: lineColor,
+        backgroundColor: fillColor, // preencher área
         pointBackgroundColor: lineColor,
         pointBorderColor: lineColor,
         pointRadius: 2,
         pointHoverRadius: 4,
         borderWidth: 2,
-        tension: 0.25,   // leve suavização
-        fill: false
+        tension: 0.25,
+        fill: true                      // <<< área preenchida
       }]
     },
     options:{
+      maintainAspectRatio: false,
       plugins:{
         legend:{ display:false },
         datalabels:{
@@ -434,10 +396,11 @@ function renderCronograma(rawRows){
           borderRadius: 6,
           color:'#fff',
           padding:{top:3,right:6,bottom:3,left:6},
-          clamp:true,
-          clip:true,
+          // garantir que 1º e último não cortem
+          clip:false,
+          clamp:false,
           align:'top',
-          offset: 6,
+          offset: 8,
           formatter:(v)=> toThousands1(v), // milhares com 1 casa
           display:(ctx)=>{
             const i = ctx.dataIndex;
@@ -453,14 +416,20 @@ function renderCronograma(rawRows){
           }
         }
       },
-      layout:{ padding:{ top:20 } },
+      // padding lateral extra para label não cortar
+      layout:{ padding:{ top:24, left:24, right:24, bottom:0 } },
       scales:{
-        x:{ grid:{ display:false } },
+        x:{
+          grid:{ display:false },
+          offset:true,                 // dá respiro nas extremidades
+          ticks:{ autoSkip:true, maxRotation:0 }
+        },
         y:{
           beginAtZero:true,
           grid:{ display:false },
           ticks:{ display:false },
-          suggestedMax: maxVal * 1.10
+          suggestedMax: maxVal * 1.10,
+          grace: '10%'                 // espaço no topo para as labels
         }
       }
     },
@@ -498,7 +467,7 @@ function loadDefault(){
       renderTabelaPL(rowsNorm);
       renderTabelaCaixa(rowsNorm);
 
-      // Novo card (linha)
+      // Novo card (linha + área)
       renderCronograma(raw);
     })
     .catch(err => alert('Erro ao carregar JSON: ' + err.message));
