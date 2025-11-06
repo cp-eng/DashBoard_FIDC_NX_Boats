@@ -8,11 +8,7 @@
     "Fonte":null,
     "Data Base":null,
     "Valor":null,
-    "Filtro":null,
-    "Data Hoje":"2025-11-06T00:00:00.000",
-    "(=) Principal BoP":902544.4700000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":902544.4700000002
+    "Filtro":null
   },
   {
     "Unnamed: 0":null,
@@ -22,12 +18,8 @@
     "Unid":"R$",
     "Fonte":null,
     "Data Base":"2025-10-29T00:00:00.000",
-    "Valor":40.0000,000,
-    "Filtro":"Patrimônio Líquido (PL)",
-    "Data Hoje":"2025-11-07T00:00:00.000",
-    "(=) Principal BoP":902544.4700000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":902544.4700000002
+    "Valor":23428092.4200000018,
+    "Filtro":"Patrimônio Líquido (PL)"
   },
   {
     "Unnamed: 0":null,
@@ -38,11 +30,7 @@
     "Fonte":null,
     "Data Base":"2025-11-06T00:00:00.000",
     "Valor":12361030.6700000037,
-    "Filtro":"Principal Alocado Total",
-    "Data Hoje":"2025-11-08T00:00:00.000",
-    "(=) Principal BoP":902544.4700000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":902544.4700000002
+    "Filtro":"Principal Alocado Total"
   },
   {
     "Unnamed: 0":null,
@@ -53,11 +41,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":4570695.2300000014,
-    "Filtro":"Principal Alocado",
-    "Data Hoje":"2025-11-09T00:00:00.000",
-    "(=) Principal BoP":902544.4700000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":902544.4700000002
+    "Filtro":"Principal Alocado"
   },
   {
     "Unnamed: 0":null,
@@ -68,11 +52,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":6887790.9700000007,
-    "Filtro":"Principal Alocado",
-    "Data Hoje":"2025-11-10T00:00:00.000",
-    "(=) Principal BoP":902544.4700000002,
-    "(-) Amortização":68200.26,
-    "(=) Principal EoP":834344.2100000002
+    "Filtro":"Principal Alocado"
   },
   {
     "Unnamed: 0":null,
@@ -83,11 +63,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":902544.4700000002,
-    "Filtro":"Principal Alocado",
-    "Data Hoje":"2025-11-11T00:00:00.000",
-    "(=) Principal BoP":834344.2100000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":834344.2100000002
+    "Filtro":"Principal Alocado"
   },
   {
     "Unnamed: 0":null,
@@ -98,11 +74,7 @@
     "Fonte":null,
     "Data Base":"2025-11-06T00:00:00.000",
     "Valor":14049080.790000001,
-    "Filtro":"Valores a Receber Total",
-    "Data Hoje":"2025-11-12T00:00:00.000",
-    "(=) Principal BoP":834344.2100000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":834344.2100000002
+    "Filtro":"Valores a Receber Total"
   },
   {
     "Unnamed: 0":null,
@@ -113,11 +85,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":5498408.1800000006,
-    "Filtro":"Valores a Receber",
-    "Data Hoje":"2025-11-13T00:00:00.000",
-    "(=) Principal BoP":834344.2100000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":834344.2100000002
+    "Filtro":"Valores a Receber"
   },
   {
     "Unnamed: 0":null,
@@ -128,11 +96,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":7554346.2100000009,
-    "Filtro":"Valores a Receber",
-    "Data Hoje":"2025-11-14T00:00:00.000",
-    "(=) Principal BoP":834344.2100000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":834344.2100000002
+    "Filtro":"Valores a Receber"
   },
   {
     "Unnamed: 0":null,
@@ -143,11 +107,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":996326.3999999997,
-    "Filtro":"Valores a Receber",
-    "Data Hoje":"2025-11-15T00:00:00.000",
-    "(=) Principal BoP":834344.2100000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":834344.2100000002
+    "Filtro":"Valores a Receber"
   },
   {
     "Unnamed: 0":null,
@@ -158,11 +118,7 @@
     "Fonte":null,
     "Data Base":"2025-11-06T00:00:00.000",
     "Valor":1.0,
-    "Filtro":"Share da Carteira Total",
-    "Data Hoje":"2025-11-16T00:00:00.000",
-    "(=) Principal BoP":834344.2100000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":834344.2100000002
+    "Filtro":"Share da Carteira Total"
   },
   {
     "Unnamed: 0":null,
@@ -173,11 +129,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":0.3697665148,
-    "Filtro":"Share da Carteira",
-    "Data Hoje":"2025-11-17T00:00:00.000",
-    "(=) Principal BoP":834344.2100000002,
-    "(-) Amortização":24416.76,
-    "(=) Principal EoP":809927.4500000002
+    "Filtro":"Share da Carteira"
   },
   {
     "Unnamed: 0":null,
@@ -188,11 +140,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":0.5572181765,
-    "Filtro":"Share da Carteira",
-    "Data Hoje":"2025-11-18T00:00:00.000",
-    "(=) Principal BoP":809927.4500000002,
-    "(-) Amortização":18366.54,
-    "(=) Principal EoP":791560.9100000001
+    "Filtro":"Share da Carteira"
   },
   {
     "Unnamed: 0":null,
@@ -203,11 +151,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":0.0730153087,
-    "Filtro":"Share da Carteira",
-    "Data Hoje":"2025-11-19T00:00:00.000",
-    "(=) Principal BoP":791560.9100000001,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":791560.9100000001
+    "Filtro":"Share da Carteira"
   },
   {
     "Unnamed: 0":null,
@@ -218,11 +162,7 @@
     "Fonte":null,
     "Data Base":"2025-11-06T00:00:00.000",
     "Valor":161.6209548617,
-    "Filtro":"Prazo Médio Total",
-    "Data Hoje":"2025-11-20T00:00:00.000",
-    "(=) Principal BoP":791560.9100000001,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":791560.9100000001
+    "Filtro":"Prazo Médio Total"
   },
   {
     "Unnamed: 0":null,
@@ -233,11 +173,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":247.1646138043,
-    "Filtro":"Prazo Médio",
-    "Data Hoje":"2025-11-21T00:00:00.000",
-    "(=) Principal BoP":791560.9100000001,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":791560.9100000001
+    "Filtro":"Prazo Médio"
   },
   {
     "Unnamed: 0":null,
@@ -248,11 +184,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":119.503974362,
-    "Filtro":"Prazo Médio",
-    "Data Hoje":"2025-11-22T00:00:00.000",
-    "(=) Principal BoP":791560.9100000001,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":791560.9100000001
+    "Filtro":"Prazo Médio"
   },
   {
     "Unnamed: 0":null,
@@ -263,11 +195,7 @@
     "Fonte":"Estoque FIDC Limine",
     "Data Base":null,
     "Valor":49.8247616874,
-    "Filtro":"Prazo Médio",
-    "Data Hoje":"2025-11-23T00:00:00.000",
-    "(=) Principal BoP":791560.9100000001,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":791560.9100000001
+    "Filtro":"Prazo Médio"
   },
   {
     "Unnamed: 0":null,
@@ -278,11 +206,7 @@
     "Fonte":null,
     "Data Base":null,
     "Valor":null,
-    "Filtro":null,
-    "Data Hoje":"2025-11-24T00:00:00.000",
-    "(=) Principal BoP":791560.9100000001,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":791560.9100000001
+    "Filtro":null
   },
   {
     "Unnamed: 0":null,
@@ -293,11 +217,7 @@
     "Fonte":null,
     "Data Base":"2025-10-29T00:00:00.000",
     "Valor":0.5129530892,
-    "Filtro":"Índice de Subordinação Total",
-    "Data Hoje":"2025-11-25T00:00:00.000",
-    "(=) Principal BoP":791560.9100000001,
-    "(-) Amortização":97328.7,
-    "(=) Principal EoP":694232.2100000002
+    "Filtro":"Índice de Subordinação Total"
   },
   {
     "Unnamed: 0":null,
@@ -308,11 +228,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":11410580.0399999991,
-    "Filtro":"Cotas Sêniores",
-    "Data Hoje":"2025-11-26T00:00:00.000",
-    "(=) Principal BoP":694232.2100000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":694232.2100000002
+    "Filtro":"Cotas Sêniores"
   },
   {
     "Unnamed: 0":null,
@@ -323,11 +239,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":3576062.71,
-    "Filtro":"Cotas Mezanino",
-    "Data Hoje":"2025-11-27T00:00:00.000",
-    "(=) Principal BoP":694232.2100000002,
-    "(-) Amortização":8894.51,
-    "(=) Principal EoP":685337.7000000002
+    "Filtro":"Cotas Mezanino"
   },
   {
     "Unnamed: 0":null,
@@ -338,11 +250,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":8441449.6699999999,
-    "Filtro":"Cotas Subordinadas",
-    "Data Hoje":"2025-11-28T00:00:00.000",
-    "(=) Principal BoP":685337.7000000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":685337.7000000002
+    "Filtro":"Cotas Subordinadas"
   },
   {
     "Unnamed: 0":null,
@@ -353,11 +261,7 @@
     "Fonte":null,
     "Data Base":null,
     "Valor":null,
-    "Filtro":null,
-    "Data Hoje":"2025-11-29T00:00:00.000",
-    "(=) Principal BoP":685337.7000000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":685337.7000000002
+    "Filtro":null
   },
   {
     "Unnamed: 0":null,
@@ -368,11 +272,7 @@
     "Fonte":null,
     "Data Base":"2025-10-29T00:00:00.000",
     "Valor":10536279.1500000004,
-    "Filtro":"(=) Caixa e Disponibilidades",
-    "Data Hoje":"2025-11-30T00:00:00.000",
-    "(=) Principal BoP":685337.7000000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":685337.7000000002
+    "Filtro":"(=) Caixa e Disponibilidades"
   },
   {
     "Unnamed: 0":null,
@@ -383,11 +283,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":1340935.53,
-    "Filtro":"(+) Conta Kanastra (Cobrança)",
-    "Data Hoje":"2025-12-01T00:00:00.000",
-    "(=) Principal BoP":685337.7000000002,
-    "(-) Amortização":30465.6,
-    "(=) Principal EoP":654872.1000000002
+    "Filtro":"(+) Conta Kanastra (Cobrança)"
   },
   {
     "Unnamed: 0":null,
@@ -398,11 +294,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":300014.22,
-    "Filtro":"(+) Conta Santander (Zeragem)",
-    "Data Hoje":"2025-12-02T00:00:00.000",
-    "(=) Principal BoP":654872.1000000002,
-    "(-) Amortização":30368.41,
-    "(=) Principal EoP":624503.6900000002
+    "Filtro":"(+) Conta Santander (Zeragem)"
   },
   {
     "Unnamed: 0":null,
@@ -413,11 +305,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":8895329.4000000004,
-    "Filtro":"(+) Aplicações Liquidez Imediata",
-    "Data Hoje":"2025-12-03T00:00:00.000",
-    "(=) Principal BoP":624503.6900000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":624503.6900000002
+    "Filtro":"(+) Aplicações Liquidez Imediata"
   },
   {
     "Unnamed: 0":null,
@@ -428,11 +316,7 @@
     "Fonte":null,
     "Data Base":"2025-10-29T00:00:00.000",
     "Valor":268860.1509999998,
-    "Filtro":"(=) Valor Disponível para Risco Sacado",
-    "Data Hoje":"2025-12-04T00:00:00.000",
-    "(=) Principal BoP":624503.6900000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":624503.6900000002
+    "Filtro":"(=) Valor Disponível para Risco Sacado"
   },
   {
     "Unnamed: 0":null,
@@ -443,11 +327,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":-902544.4700000002,
-    "Filtro":"(-) Principal Alocado em Risco Sacado",
-    "Data Hoje":"2025-12-05T00:00:00.000",
-    "(=) Principal BoP":624503.6900000002,
-    "(-) Amortização":11150.62,
-    "(=) Principal EoP":613353.0700000002
+    "Filtro":"(-) Principal Alocado em Risco Sacado"
   },
   {
     "Unnamed: 0":null,
@@ -458,11 +338,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":1171404.621,
-    "Filtro":"(+) Limite de Principal Alocado Risco Sacado",
-    "Data Hoje":"2025-12-06T00:00:00.000",
-    "(=) Principal BoP":613353.0700000002,
-    "(-) Amortização":0.0,
-    "(=) Principal EoP":613353.0700000002
+    "Filtro":"(+) Limite de Principal Alocado Risco Sacado"
   },
   {
     "Unnamed: 0":null,
@@ -473,11 +349,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":23428092.4200000018,
-    "Filtro":"Patrimônio Líquido (PL)",
-    "Data Hoje":null,
-    "(=) Principal BoP":null,
-    "(-) Amortização":null,
-    "(=) Principal EoP":null
+    "Filtro":"Patrimônio Líquido (PL)"
   },
   {
     "Unnamed: 0":null,
@@ -488,11 +360,7 @@
     "Fonte":"Carteira Diária Limine",
     "Data Base":null,
     "Valor":0.05,
-    "Filtro":"% PL Máximo Alocado em Risco Sacado",
-    "Data Hoje":null,
-    "(=) Principal BoP":null,
-    "(-) Amortização":null,
-    "(=) Principal EoP":null
+    "Filtro":"% PL Máximo Alocado em Risco Sacado"
   },
   {
     "Unnamed: 0":null,
@@ -503,11 +371,7 @@
     "Fonte":"TAG",
     "Data Base":"Valor",
     "Valor":null,
-    "Filtro":null,
-    "Data Hoje":null,
-    "(=) Principal BoP":null,
-    "(-) Amortização":null,
-    "(=) Principal EoP":null
+    "Filtro":null
   },
   {
     "Unnamed: 0":null,
@@ -518,11 +382,7 @@
     "Fonte":null,
     "Data Base":null,
     "Valor":null,
-    "Filtro":null,
-    "Data Hoje":null,
-    "(=) Principal BoP":null,
-    "(-) Amortização":null,
-    "(=) Principal EoP":null
+    "Filtro":null
   },
   {
     "Unnamed: 0":null,
@@ -533,11 +393,7 @@
     "Fonte":92025.0,
     "Data Base":6345.62492,
     "Valor":null,
-    "Filtro":null,
-    "Data Hoje":null,
-    "(=) Principal BoP":null,
-    "(-) Amortização":null,
-    "(=) Principal EoP":null
+    "Filtro":null
   },
   {
     "Unnamed: 0":null,
@@ -548,11 +404,7 @@
     "Fonte":102025.0,
     "Data Base":79525.057295,
     "Valor":null,
-    "Filtro":null,
-    "Data Hoje":null,
-    "(=) Principal BoP":null,
-    "(-) Amortização":null,
-    "(=) Principal EoP":null
+    "Filtro":null
   },
   {
     "Unnamed: 0":null,
@@ -563,10 +415,369 @@
     "Fonte":112025.0,
     "Data Base":4831.40971,
     "Valor":null,
-    "Filtro":null,
-    "Data Hoje":null,
-    "(=) Principal BoP":null,
-    "(-) Amortização":null,
-    "(=) Principal EoP":null
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":5.0,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"Cronograma de amortização Risco Sacado",
+    "Unid":null,
+    "Fonte":null,
+    "Data Base":null,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"Data Hoje ",
+    "Unid":"(=) Principal BoP",
+    "Fonte":"(-) Amortização",
+    "Data Base":"(=) Principal EoP",
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-06T00:00:00.000",
+    "Unid":902544.4700000002,
+    "Fonte":0.0,
+    "Data Base":902544.4700000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-07T00:00:00.000",
+    "Unid":902544.4700000002,
+    "Fonte":0.0,
+    "Data Base":902544.4700000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-08T00:00:00.000",
+    "Unid":902544.4700000002,
+    "Fonte":0.0,
+    "Data Base":902544.4700000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-09T00:00:00.000",
+    "Unid":902544.4700000002,
+    "Fonte":0.0,
+    "Data Base":902544.4700000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-10T00:00:00.000",
+    "Unid":902544.4700000002,
+    "Fonte":68200.26,
+    "Data Base":834344.2100000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-11T00:00:00.000",
+    "Unid":834344.2100000002,
+    "Fonte":0.0,
+    "Data Base":834344.2100000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-12T00:00:00.000",
+    "Unid":834344.2100000002,
+    "Fonte":0.0,
+    "Data Base":834344.2100000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-13T00:00:00.000",
+    "Unid":834344.2100000002,
+    "Fonte":0.0,
+    "Data Base":834344.2100000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-14T00:00:00.000",
+    "Unid":834344.2100000002,
+    "Fonte":0.0,
+    "Data Base":834344.2100000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-15T00:00:00.000",
+    "Unid":834344.2100000002,
+    "Fonte":0.0,
+    "Data Base":834344.2100000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-16T00:00:00.000",
+    "Unid":834344.2100000002,
+    "Fonte":0.0,
+    "Data Base":834344.2100000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-17T00:00:00.000",
+    "Unid":834344.2100000002,
+    "Fonte":24416.76,
+    "Data Base":809927.4500000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-18T00:00:00.000",
+    "Unid":809927.4500000002,
+    "Fonte":18366.54,
+    "Data Base":791560.9100000001,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-19T00:00:00.000",
+    "Unid":791560.9100000001,
+    "Fonte":0.0,
+    "Data Base":791560.9100000001,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-20T00:00:00.000",
+    "Unid":791560.9100000001,
+    "Fonte":0.0,
+    "Data Base":791560.9100000001,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-21T00:00:00.000",
+    "Unid":791560.9100000001,
+    "Fonte":0.0,
+    "Data Base":791560.9100000001,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-22T00:00:00.000",
+    "Unid":791560.9100000001,
+    "Fonte":0.0,
+    "Data Base":791560.9100000001,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-23T00:00:00.000",
+    "Unid":791560.9100000001,
+    "Fonte":0.0,
+    "Data Base":791560.9100000001,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-24T00:00:00.000",
+    "Unid":791560.9100000001,
+    "Fonte":0.0,
+    "Data Base":791560.9100000001,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-25T00:00:00.000",
+    "Unid":791560.9100000001,
+    "Fonte":97328.7,
+    "Data Base":694232.2100000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-26T00:00:00.000",
+    "Unid":694232.2100000002,
+    "Fonte":0.0,
+    "Data Base":694232.2100000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-27T00:00:00.000",
+    "Unid":694232.2100000002,
+    "Fonte":8894.51,
+    "Data Base":685337.7000000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-28T00:00:00.000",
+    "Unid":685337.7000000002,
+    "Fonte":0.0,
+    "Data Base":685337.7000000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-29T00:00:00.000",
+    "Unid":685337.7000000002,
+    "Fonte":0.0,
+    "Data Base":685337.7000000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-11-30T00:00:00.000",
+    "Unid":685337.7000000002,
+    "Fonte":0.0,
+    "Data Base":685337.7000000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-12-01T00:00:00.000",
+    "Unid":685337.7000000002,
+    "Fonte":30465.6,
+    "Data Base":654872.1000000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-12-02T00:00:00.000",
+    "Unid":654872.1000000002,
+    "Fonte":30368.41,
+    "Data Base":624503.6900000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-12-03T00:00:00.000",
+    "Unid":624503.6900000002,
+    "Fonte":0.0,
+    "Data Base":624503.6900000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-12-04T00:00:00.000",
+    "Unid":624503.6900000002,
+    "Fonte":0.0,
+    "Data Base":624503.6900000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-12-05T00:00:00.000",
+    "Unid":624503.6900000002,
+    "Fonte":11150.62,
+    "Data Base":613353.0700000002,
+    "Valor":null,
+    "Filtro":null
+  },
+  {
+    "Unnamed: 0":null,
+    "Unnamed: 1":null,
+    "Unnamed: 2":null,
+    "Overview FIDC NX Boats":"2025-12-06T00:00:00.000",
+    "Unid":613353.0700000002,
+    "Fonte":0.0,
+    "Data Base":613353.0700000002,
+    "Valor":null,
+    "Filtro":null
   }
 ]
