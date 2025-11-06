@@ -43,7 +43,7 @@
   /* data-base */
   .dbase{
     margin-top:8px;
-    font-size:14px;      /* equivalente solicitado */
+    font-size:14px;
     color:#334155;
     opacity:.9;
     text-align:right;
@@ -120,6 +120,13 @@
       </table>
       <div class="dbase" id="dbPrazo">Data-base: –</div>
     </div>
+
+    <!-- NOVO: Cronograma de amortização Risco Sacado -->
+    <div class="card col-12">
+      <div class="band">PL Projetado em Risco Sacado (R$ milhares)</div>
+      <canvas id="chartCronRS" height="160"></canvas>
+      <div class="dbase" id="dbCronRS">Data-base: –</div>
+    </div>
   </div>
 </div>
 
@@ -127,7 +134,7 @@
 /* =========================
    CONFIG & helpers
    ========================= */
-const DEFAULT_JSON = 'data/carteira_power_bi.json'; // arquivo do próprio repositório
+const DEFAULT_JSON = 'data/carteira_power_bi.json'; // caminho do JSON no seu repo
 
 // Paleta
 const C_TOTAL      = '#004065';
@@ -151,16 +158,23 @@ function fmt1(n){
 }
 const pct1 = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1});
 
-// Converte "2025-11-05T00:00:00.000" -> "05/11/2025"
-function toBRDate(str){
+// Converte "2025-11-05T00:00:00.000" -> "05/11" (para eixo) ou "05/11/2025" (datas-base)
+function toBRDate(str, short=false){
   if(!str) return '–';
   const d = new Date(str);
-  if(!isNaN(d)) return d.toLocaleDateString('pt-BR');
-  // fallback: já está dd/mm/aaaa, retorna como veio
+  if(!isNaN(d)){
+    if(short) return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+    return d.toLocaleDateString('pt-BR');
+  }
   return String(str);
 }
 
-let chartPrincipal, chartShare, chartReceber;
+// Milhares com 2 casas (xx,xx)
+function toThousands2(n){
+  return (Number(n)/1000).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+let chartPrincipal, chartShare, chartReceber, chartCronRS;
 
 /* Utils de filtro */
 function byFiltro(rows, nome){ return rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase()); }
@@ -201,6 +215,7 @@ function setKpis(rows){
   setDB('dbShare',     principalDate);
   setDB('dbReceber',   principalDate);
   setDB('dbPrazo',     principalDate);
+  setDB('dbCronRS',    principalDate); // novo card segue a mesma lógica
 }
 function setDB(id, dateStr){
   document.getElementById(id).textContent = `Data-base: ${toBRDate(dateStr)}`;
@@ -321,7 +336,7 @@ function renderPrazo(rows){
    ========================= */
 function renderTabelaPL(rows){
   const labels = [
-    {disp:'Cotas Sêniores',  keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']}, /* corrigido */
+    {disp:'Cotas Sêniores',  keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']},
     {disp:'Cotas Subordinadas', keys:['Cotas Subordinadas']},
     {disp:'Cotas Mezanino', keys:['Cotas Mezanino','Cotas MezAnino']}
   ];
@@ -357,6 +372,89 @@ function renderTabelaCaixa(rows){
 }
 
 /* =========================
+   NOVO: Cronograma Risco Sacado
+   ========================= */
+// Lê 31 linhas após o marcador "Cronograma de amortização Risco Sacado"
+// Eixo X: datas em "Overview FIDC NX Boats" | Eixo Y: Principal EoP em "Data Base"
+function getCronogramaData(rawRows){
+  const rows = rawRows; // usar estrutura crua do JSON
+  const idxMarker = rows.findIndex(r => String(r["Overview FIDC NX Boats"]||'').trim().toLowerCase() === 'cronograma de amortização risco sacado');
+  if(idxMarker === -1) return {labels:[], values:[]};
+
+  // Próxima linha costuma ser cabeçalho; começamos duas linhas depois
+  let start = idxMarker + 2;
+  const labels = [];
+  const values = [];
+
+  for(let i=0; i<31; i++){
+    const row = rows[start + i];
+    if(!row) break;
+
+    const labelISO = row["Overview FIDC NX Boats"];
+    const eop = row["Data Base"]; // Principal EoP
+    if(labelISO == null || eop == null) break;
+
+    labels.push(toBRDate(labelISO, true)); // dd/MM
+    values.push(Number(eop) || 0);
+  }
+  return {labels, values};
+}
+
+function renderCronograma(rawRows){
+  const {labels, values} = getCronogramaData(rawRows);
+  const ctx = document.getElementById('chartCronRS');
+  if(chartCronRS) chartCronRS.destroy();
+
+  const maxVal = values.length ? Math.max(...values) : 0;
+  chartCronRS = new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        data: values,
+        backgroundColor: '#004065' // todas as barras em azul-muito-escuro (HEX1)
+      }]
+    },
+    options:{
+      plugins:{
+        legend:{ display:false },
+        datalabels:{
+          anchor:'end',
+          align:'end',
+          color:'#000',
+          font:{ weight:'700', size:12 },
+          formatter:(v, ctx)=>{
+            const i = ctx.dataIndex;
+            const last = ctx.dataset.data.length - 1;
+            // primeira, última e a cada 5 barras
+            if (i === 0 || i === last || i % 5 === 0){
+              return toThousands2(v); // milhares com 2 casas: xx,xx
+            }
+            return null; // sem label nas demais
+          }
+        },
+        tooltip:{
+          callbacks:{
+            label:(c)=> 'R$ ' + fmt1(c.parsed.y)
+          }
+        }
+      },
+      layout:{ padding:{ top:20 } },
+      scales:{
+        x:{ grid:{ display:false } },
+        y:{
+          beginAtZero:true,
+          grid:{ display:false },
+          ticks:{ display:false },
+          suggestedMax: maxVal * 1.10
+        }
+      }
+    },
+    plugins:[ChartDataLabels]
+  });
+}
+
+/* =========================
    Normalização e carga
    ========================= */
 function normalizeRows(rows){
@@ -375,14 +473,19 @@ function loadDefault(){
   fetch(DEFAULT_JSON + bust)
     .then(r => { if(!r.ok) throw new Error('Falha ao ler JSON'); return r.json(); })
     .then(raw => {
-      const rows = normalizeRows(raw);
-      setKpis(rows);
-      renderPrincipal(rows);
-      renderShare(rows);
-      renderReceber(rows);
-      renderPrazo(rows);
-      renderTabelaPL(rows);
-      renderTabelaCaixa(rows);
+      // Normalizado (para os cards existentes) + Cru (para o cronograma)
+      const rowsNorm = normalizeRows(raw);
+
+      setKpis(rowsNorm);
+      renderPrincipal(rowsNorm);
+      renderShare(rowsNorm);
+      renderReceber(rowsNorm);
+      renderPrazo(rowsNorm);
+      renderTabelaPL(rowsNorm);
+      renderTabelaCaixa(rowsNorm);
+
+      // Novo card
+      renderCronograma(raw);
     })
     .catch(err => alert('Erro ao carregar JSON: ' + err.message));
 }
