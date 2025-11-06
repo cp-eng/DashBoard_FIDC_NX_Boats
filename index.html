@@ -169,9 +169,9 @@ function toBRDate(str, short=false){
   return String(str);
 }
 
-// Milhares com 2 casas (xx,xx)
-function toThousands2(n){
-  return (Number(n)/1000).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+// Milhares com 1 casa (xx,x)
+function toThousands1(n){
+  return (Number(n)/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
 }
 
 let chartPrincipal, chartShare, chartReceber, chartCronRS;
@@ -222,7 +222,7 @@ function setDB(id, dateStr){
 }
 
 /* =========================
-   Gráficos
+   Gráficos existentes
    ========================= */
 function commonBarOptions(maxVal){
   return {
@@ -372,7 +372,7 @@ function renderTabelaCaixa(rows){
 }
 
 /* =========================
-   NOVO: Cronograma Risco Sacado
+   NOVO: Cronograma Risco Sacado (LINHA)
    ========================= */
 // Lê 31 linhas após o marcador "Cronograma de amortização Risco Sacado"
 // Eixo X: datas em "Overview FIDC NX Boats" | Eixo Y: Principal EoP em "Data Base"
@@ -405,32 +405,46 @@ function renderCronograma(rawRows){
   const ctx = document.getElementById('chartCronRS');
   if(chartCronRS) chartCronRS.destroy();
 
+  const lineColor = '#004065';
   const maxVal = values.length ? Math.max(...values) : 0;
+
   chartCronRS = new Chart(ctx,{
-    type:'bar',
+    type:'line',
     data:{
       labels,
       datasets:[{
         data: values,
-        backgroundColor: '#004065' // todas as barras em azul-muito-escuro (HEX1)
+        borderColor: lineColor,
+        backgroundColor: lineColor,
+        pointBackgroundColor: lineColor,
+        pointBorderColor: lineColor,
+        pointRadius: 2,
+        pointHoverRadius: 4,
+        borderWidth: 2,
+        tension: 0.25,   // leve suavização
+        fill: false
       }]
     },
     options:{
       plugins:{
         legend:{ display:false },
         datalabels:{
-          anchor:'end',
-          align:'end',
-          color:'#000',
-          font:{ weight:'700', size:12 },
-          formatter:(v, ctx)=>{
+          // pill com a mesma cor da linha e texto branco
+          backgroundColor: lineColor,
+          borderRadius: 6,
+          color:'#fff',
+          padding:{top:3,right:6,bottom:3,left:6},
+          clamp:true,
+          clip:true,
+          align:'top',
+          offset: 6,
+          formatter:(v)=> toThousands1(v), // milhares com 1 casa
+          display:(ctx)=>{
             const i = ctx.dataIndex;
-            const last = ctx.dataset.data.length - 1;
-            // primeira, última e a cada 5 barras
-            if (i === 0 || i === last || i % 5 === 0){
-              return toThousands2(v); // milhares com 2 casas: xx,xx
-            }
-            return null; // sem label nas demais
+            const total = ctx.dataset.data.length;
+            const last = total - 1;
+            // mostra no primeiro, no último e a cada 3 dias
+            return (i===0) || (i===last) || (i % 3 === 0);
           }
         },
         tooltip:{
@@ -484,7 +498,7 @@ function loadDefault(){
       renderTabelaPL(rowsNorm);
       renderTabelaCaixa(rowsNorm);
 
-      // Novo card
+      // Novo card (linha)
       renderCronograma(raw);
     })
     .catch(err => alert('Erro ao carregar JSON: ' + err.message));
