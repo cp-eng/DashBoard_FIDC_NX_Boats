@@ -1,3 +1,4 @@
+<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
@@ -371,16 +372,15 @@ function renderTabelaCaixa(rows){
 }
 
 /* =========================
-   NOVO: Cronograma Risco Sacado (LINHA)
+   NOVO: Cronograma Risco Sacado (LINHA + ÁREA)
    ========================= */
 // Lê 31 linhas após o marcador "Cronograma de amortização Risco Sacado"
-// Eixo X: datas em "Overview FIDC NX Boats" | Eixo Y: Principal EoP em "Data Base"
 function getCronogramaData(rawRows){
-  const rows = rawRows; // usar estrutura crua do JSON
+  const rows = rawRows;
   const idxMarker = rows.findIndex(r => String(r["Overview FIDC NX Boats"]||'').trim().toLowerCase() === 'cronograma de amortização risco sacado');
   if(idxMarker === -1) return {labels:[], values:[]};
 
-  // Próxima linha costuma ser cabeçalho; começamos duas linhas depois
+  // Cabeçalho na linha seguinte; começamos duas linhas depois
   let start = idxMarker + 2;
   const labels = [];
   const values = [];
@@ -405,6 +405,7 @@ function renderCronograma(rawRows){
   if(chartCronRS) chartCronRS.destroy();
 
   const lineColor = '#004065';
+  const fillColor = 'rgba(167,204,235,0.35)'; // azul-claro com transparência
   const maxVal = values.length ? Math.max(...values) : 0;
 
   chartCronRS = new Chart(ctx,{
@@ -414,35 +415,34 @@ function renderCronograma(rawRows){
       datasets:[{
         data: values,
         borderColor: lineColor,
-        backgroundColor: lineColor,
+        backgroundColor: fillColor, // preencher área
         pointBackgroundColor: lineColor,
         pointBorderColor: lineColor,
         pointRadius: 2,
         pointHoverRadius: 4,
         borderWidth: 2,
-        tension: 0.25,   // leve suavização
-        fill: false
+        tension: 0.25,
+        fill: true
       }]
     },
     options:{
+      maintainAspectRatio: false,
       plugins:{
         legend:{ display:false },
         datalabels:{
-          // pill com a mesma cor da linha e texto branco
           backgroundColor: lineColor,
           borderRadius: 6,
           color:'#fff',
           padding:{top:3,right:6,bottom:3,left:6},
-          clamp:true,
-          clip:true,
+          clip:false,   // evita cortar 1º/último
+          clamp:false,
           align:'top',
-          offset: 6,
-          formatter:(v)=> toThousands1(v), // milhares com 1 casa
+          offset: 8,
+          formatter:(v)=> toThousands1(v),
           display:(ctx)=>{
             const i = ctx.dataIndex;
             const total = ctx.dataset.data.length;
             const last = total - 1;
-            // mostra no primeiro, no último e a cada 3 dias
             return (i===0) || (i===last) || (i % 3 === 0);
           }
         },
@@ -452,14 +452,19 @@ function renderCronograma(rawRows){
           }
         }
       },
-      layout:{ padding:{ top:20 } },
+      layout:{ padding:{ top:24, left:24, right:24, bottom:0 } }, // respiro lateral p/ labels
       scales:{
-        x:{ grid:{ display:false } },
+        x:{
+          grid:{ display:false },
+          offset:true,
+          ticks:{ autoSkip:true, maxRotation:0 }
+        },
         y:{
           beginAtZero:true,
           grid:{ display:false },
           ticks:{ display:false },
-          suggestedMax: maxVal * 1.10
+          suggestedMax: maxVal * 1.10,
+          grace: '10%' // espaço no topo p/ labels
         }
       }
     },
@@ -486,7 +491,6 @@ function loadDefault(){
   fetch(DEFAULT_JSON + bust)
     .then(r => { if(!r.ok) throw new Error('Falha ao ler JSON'); return r.json(); })
     .then(raw => {
-      // Normalizado (para os cards existentes) + Cru (para o cronograma)
       const rowsNorm = normalizeRows(raw);
 
       setKpis(rowsNorm);
@@ -494,10 +498,9 @@ function loadDefault(){
       renderShare(rowsNorm);
       renderReceber(rowsNorm);
       renderPrazo(rowsNorm);
-      renderTabelaPL(rowsNorm);
+      renderTabelaPL(rowsNorm);     // <- garantido que existe
       renderTabelaCaixa(rowsNorm);
 
-      // Novo card (linha)
       renderCronograma(raw);
     })
     .catch(err => alert('Erro ao carregar JSON: ' + err.message));
