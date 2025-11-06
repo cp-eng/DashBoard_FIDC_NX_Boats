@@ -19,6 +19,8 @@
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#eef4fb;color:#0f172a}
+
+  /* Header do dashboard */
   header{
     background:var(--azul-muito-escuro);
     color:#fff;
@@ -28,6 +30,8 @@
     text-align:center;
     letter-spacing:.3px
   }
+
+  /* Container geral do dashboard */
   .wrap{max-width:1200px;margin:18px auto;padding:0 12px}
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
   .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
@@ -43,7 +47,7 @@
   /* data-base */
   .dbase{
     margin-top:8px;
-    font-size:14px;      /* equivalente solicitado */
+    font-size:14px;
     color:#334155;
     opacity:.9;
     text-align:right;
@@ -51,81 +55,232 @@
 
   .col-12{grid-column:span 12}.col-8{grid-column:span 12}.col-4{grid-column:span 12}.col-6{grid-column:span 12}
   @media(min-width:1000px){.col-8{grid-column:span 8}.col-4{grid-column:span 4}.col-6{grid-column:span 6}}
+
+  /* ========= TELA DE LOGIN ========= */
+  #login{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .login-card{
+    width:100%;
+    max-width:420px;
+    background:#fff;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    padding:22px;
+  }
+  .login-head{
+    display:flex;align-items:center;gap:10px;margin-bottom:10px
+  }
+  .badge{
+    background:var(--azul-escuro);
+    color:#fff;
+    padding:8px 12px;
+    border-radius:12px;
+    font-weight:900;
+  }
+  .login-title{font-size:20px;font-weight:800;margin:6px 0 2px}
+  .login-sub{font-size:13px;color:#475569;margin-bottom:16px}
+  .login-group{margin:10px 0}
+  .login-label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:#0f172a}
+  .login-input{
+    width:100%;
+    border:1px solid #dbe5f1;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:15px;
+    outline:none;
+  }
+  .login-input:focus{border-color:var(--azul-escuro);box-shadow:0 0 0 3px rgba(40,109,172,.15)}
+  .login-remember{display:flex;align-items:center;gap:8px;margin:8px 0 2px;font-size:14px;color:#334155}
+  .login-error{color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;border-radius:10px;padding:8px 10px;font-size:13px;display:none;margin-top:8px}
+  .login-actions{display:flex;gap:10px;margin-top:12px}
+  .btn{
+    appearance:none;border:none;border-radius:12px;
+    background:var(--azul-muito-escuro);color:#fff;
+    padding:10px 14px;font-weight:900;cursor:pointer;font-size:15px
+  }
+  .btn.sec{background:#e2e8f0;color:#0f172a;font-weight:800}
+  .muted{font-size:12px;color:#64748b;margin-top:8px}
+
+  /* Esconde app até autenticar */
+  #app{display:none}
 </style>
 </head>
 <body>
-<header>Dashboard FIDC NX Boats</header>
 
-<div class="wrap">
-  <div class="grid">
-    <!-- PL (com Índice de Subordinação dentro) -->
-    <div class="card col-6">
-      <div class="band">Patrimônio Líquido (PL)</div>
-      <div id="kpiPL" class="kpi-valor">–</div>
-
-      <div class="sub-title">Índice de Subordinação</div>
-      <div id="kpiSubInline" class="kpi-valor">–</div>
-
-      <h4 style="margin:12px 0 6px">Composição PL</h4>
-      <table class="table" id="tbPL">
-        <thead><tr><th>Classe</th><th class="center">Valor</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <div class="dbase" id="dbPL">Data-base: –</div>
+<!-- ====== LOGIN ====== -->
+<section id="login" aria-label="Acesso ao Dashboard">
+  <div class="login-card">
+    <div class="login-head">
+      <span class="badge">Acesso restrito</span>
     </div>
+    <div class="login-title">Dashboard FIDC NX Boats</div>
+    <div class="login-sub">Informe usuário e senha para visualizar o dashboard.</div>
 
-    <!-- Caixa -->
-    <div class="card col-6">
-      <div class="band">Caixa</div>
-      <div id="kpiCaixa" class="kpi-valor">–</div>
+    <div class="login-group">
+      <label class="login-label" for="user">Usuário</label>
+      <input id="user" class="login-input" type="text" autocomplete="username" placeholder='Ex.: "FIDC NX Boats"'>
+    </div>
+    <div class="login-group">
+      <label class="login-label" for="pass">Senha</label>
+      <input id="pass" class="login-input" type="password" autocomplete="current-password" placeholder='Ex.: "Dashboard FIDC NX Boats"'>
+    </div>
+    <label class="login-remember">
+      <input id="remember" type="checkbox"> Lembrar acesso neste dispositivo
+    </label>
+    <div id="loginError" class="login-error">Credenciais inválidas. Tente novamente.</div>
+    <div class="login-actions">
+      <button class="btn" id="btnEnter">Entrar</button>
+      <button class="btn sec" id="btnClear">Limpar</button>
+    </div>
+    <div class="muted">Dica: marque “Lembrar acesso” para não precisar logar por 30 dias neste navegador.</div>
+  </div>
+</section>
 
-      <h4 style="margin:12px 0 6px">Composição Caixa</h4>
-      <table class="table" id="tbCaixa">
-        <thead><tr><th>Alocação de Caixa</th><th class="center">Valor</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <div class="dbase" id="dbCaixa">Data-base: –</div>
-    </div>
+<!-- ====== APP (DASHBOARD) ====== -->
+<div id="app">
+  <header>Dashboard FIDC NX Boats</header>
 
-    <!-- Valor disponível para Risco Sacado -->
-    <div class="card col-6">
-      <div class="band">Valor Disponível para Risco Sacado</div>
-      <div id="kpiRisco" class="kpi-valor center">–</div>
-      <div class="dbase" id="dbRisco">Data-base: –</div>
-    </div>
+  <div class="wrap">
+    <div class="grid">
+      <!-- PL (com Índice de Subordinação dentro) -->
+      <div class="card col-6">
+        <div class="band">Patrimônio Líquido (PL)</div>
+        <div id="kpiPL" class="kpi-valor">–</div>
 
-    <!-- Principal Alocado (barras) + Share (rosca) -->
-    <div class="card col-8">
-      <div class="band">Principal Alocado por Operação</div>
-      <canvas id="chartPrincipal" height="140"></canvas>
-      <div class="dbase" id="dbPrincipal">Data-base: –</div>
-    </div>
-    <div class="card col-4">
-      <div class="band">Share da Carteira</div>
-      <canvas id="chartShare" height="140"></canvas>
-      <div class="dbase" id="dbShare">Data-base: –</div>
-    </div>
+        <div class="sub-title">Índice de Subordinação</div>
+        <div id="kpiSubInline" class="kpi-valor">–</div>
 
-    <!-- Valores a Receber + Prazo Médio -->
-    <div class="card col-8">
-      <div class="band">Valores a Receber por Operação</div>
-      <canvas id="chartReceber" height="140"></canvas>
-      <div class="dbase" id="dbReceber">Data-base: –</div>
-    </div>
-    <div class="card col-4">
-      <div class="band">Prazo Médio por Operação</div>
-      <table class="table">
-        <thead><tr><th>Operação</th><th class="center">Dias</th></tr></thead>
-        <tbody id="tbodyPrazo"></tbody>
-      </table>
-      <div class="dbase" id="dbPrazo">Data-base: –</div>
+        <h4 style="margin:12px 0 6px">Composição PL</h4>
+        <table class="table" id="tbPL">
+          <thead><tr><th>Classe</th><th class="center">Valor</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="dbase" id="dbPL">Data-base: –</div>
+      </div>
+
+      <!-- Caixa -->
+      <div class="card col-6">
+        <div class="band">Caixa</div>
+        <div id="kpiCaixa" class="kpi-valor">–</div>
+
+        <h4 style="margin:12px 0 6px">Composição Caixa</h4>
+        <table class="table" id="tbCaixa">
+          <thead><tr><th>Alocação de Caixa</th><th class="center">Valor</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="dbase" id="dbCaixa">Data-base: –</div>
+      </div>
+
+      <!-- Valor disponível para Risco Sacado -->
+      <div class="card col-6">
+        <div class="band">Valor Disponível para Risco Sacado</div>
+        <div id="kpiRisco" class="kpi-valor center">–</div>
+        <div class="dbase" id="dbRisco">Data-base: –</div>
+      </div>
+
+      <!-- Principal Alocado (barras) + Share (rosca) -->
+      <div class="card col-8">
+        <div class="band">Principal Alocado por Operação</div>
+        <canvas id="chartPrincipal" height="140"></canvas>
+        <div class="dbase" id="dbPrincipal">Data-base: –</div>
+      </div>
+      <div class="card col-4">
+        <div class="band">Share da Carteira</div>
+        <canvas id="chartShare" height="140"></canvas>
+        <div class="dbase" id="dbShare">Data-base: –</div>
+      </div>
+
+      <!-- Valores a Receber + Prazo Médio -->
+      <div class="card col-8">
+        <div class="band">Valores a Receber por Operação</div>
+        <canvas id="chartReceber" height="140"></canvas>
+        <div class="dbase" id="dbReceber">Data-base: –</div>
+      </div>
+      <div class="card col-4">
+        <div class="band">Prazo Médio por Operação</div>
+        <table class="table">
+          <thead><tr><th>Operação</th><th class="center">Dias</th></tr></thead>
+          <tbody id="tbodyPrazo"></tbody>
+        </table>
+        <div class="dbase" id="dbPrazo">Data-base: –</div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
 /* =========================
-   CONFIG & helpers
+   LOGIN / AUTENTICAÇÃO
+   ========================= */
+// Aviso: esta proteção é 100% no front-end (didática). Para dados realmente sensíveis,
+// considere autenticação no servidor e proteção do JSON.
+
+// Config
+const USER_EXPECTED = 'FIDC NX Boats';
+const PASS_EXPECTED = 'Dashboard FIDC NX Boats';
+const REMEMBER_KEY  = 'nxAuth';
+const REMEMBER_TTL  = 30 * 24 * 60 * 60 * 1000; // 30 dias
+
+function rememberNow(){
+  const payload = { ok:true, ts: Date.now() };
+  localStorage.setItem(REMEMBER_KEY, JSON.stringify(payload));
+}
+function isRemembered(){
+  try{
+    const raw = localStorage.getItem(REMEMBER_KEY);
+    if(!raw) return false;
+    const obj = JSON.parse(raw);
+    if(!obj || !obj.ok || !obj.ts) return false;
+    return (Date.now() - obj.ts) < REMEMBER_TTL;
+  }catch(e){ return false; }
+}
+function clearRemember(){ localStorage.removeItem(REMEMBER_KEY); }
+
+function showApp(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+  // carrega dashboard somente após autenticar
+  bootDashboard();
+}
+
+function handleLogin(){
+  const u = document.getElementById('user').value.trim();
+  const p = document.getElementById('pass').value.trim();
+  const remember = document.getElementById('remember').checked;
+  const err = document.getElementById('loginError');
+
+  if(u === USER_EXPECTED && p === PASS_EXPECTED){
+    err.style.display='none';
+    if(remember) rememberNow();
+    showApp();
+  }else{
+    err.style.display='block';
+  }
+}
+
+function prepLoginUI(){
+  document.getElementById('btnEnter').addEventListener('click', handleLogin);
+  document.getElementById('btnClear').addEventListener('click', ()=>{
+    document.getElementById('user').value='';
+    document.getElementById('pass').value='';
+    document.getElementById('loginError').style.display='none';
+  });
+  // Enter envia
+  document.getElementById('pass').addEventListener('keydown', (e)=>{
+    if(e.key==='Enter') handleLogin();
+  });
+
+  // Se lembrado, entra direto
+  if(isRemembered()) showApp();
+}
+
+/* =========================
+   DASHBOARD (igual ao seu código)
    ========================= */
 const DEFAULT_JSON = 'data/carteira_power_bi.json'; // arquivo do próprio repositório
 
@@ -156,7 +311,6 @@ function toBRDate(str){
   if(!str) return '–';
   const d = new Date(str);
   if(!isNaN(d)) return d.toLocaleDateString('pt-BR');
-  // fallback: já está dd/mm/aaaa, retorna como veio
   return String(str);
 }
 
@@ -321,7 +475,7 @@ function renderPrazo(rows){
    ========================= */
 function renderTabelaPL(rows){
   const labels = [
-    {disp:'Cotas Sêniores',  keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']}, /* corrigido */
+    {disp:'Cotas Sêniores',  keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']},
     {disp:'Cotas Subordinadas', keys:['Cotas Subordinadas']},
     {disp:'Cotas Mezanino', keys:['Cotas Mezanino','Cotas MezAnino']}
   ];
@@ -357,7 +511,7 @@ function renderTabelaCaixa(rows){
 }
 
 /* =========================
-   Normalização e carga
+   Normalização e carga (executada SÓ após login)
    ========================= */
 function normalizeRows(rows){
   return rows.map(r => ({
@@ -370,7 +524,7 @@ function normalizeRows(rows){
   }));
 }
 
-function loadDefault(){
+function bootDashboard(){
   const bust = `?v=${Date.now()}`; // evita cache
   fetch(DEFAULT_JSON + bust)
     .then(r => { if(!r.ok) throw new Error('Falha ao ler JSON'); return r.json(); })
@@ -387,8 +541,9 @@ function loadDefault(){
     .catch(err => alert('Erro ao carregar JSON: ' + err.message));
 }
 
+/* Boot inicial: prepara login e, se lembrado, entra direto */
 Chart.register(ChartDataLabels);
-window.addEventListener('DOMContentLoaded', loadDefault);
+window.addEventListener('DOMContentLoaded', prepLoginUI);
 </script>
 </body>
 </html>
