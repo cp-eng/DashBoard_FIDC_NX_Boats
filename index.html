@@ -74,7 +74,7 @@
   .tag-no{background:rgba(220,38,38,.12);color:var(--vermelho-no);padding:2px 8px;border-radius:999px;font-weight:800;display:inline-block}
   .highlight-row{font-weight:900;border-bottom:2px solid #334155}
 
-  /* ========= MINI-TABELA COM/SEM AF (agora abaixo do título) ========= */
+  /* ========= MINI-TABELA COM/SEM AF ========= */
   .mini-afbar{display:flex;justify-content:flex-end;margin:-4px 0 8px}
   .mini-af{background:#fff;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.06);overflow:hidden;min-width:260px}
   .mini-af table{width:100%;border-collapse:collapse;font-size:13px}
@@ -156,7 +156,7 @@
           <div class="dbase" id="dbCaixa">Data-base: –</div>
         </div>
 
-        <!-- NOVO: Valor Disponível para Risco Sacado (da seção B) -->
+        <!-- Valor Disponível para Risco Sacado -->
         <div class="card col-6">
           <div class="band">Valor Disponível para Risco Sacado</div>
           <div id="kpiRisco" class="kpi-valor center">–</div>
@@ -167,7 +167,6 @@
         <div class="card col-8">
           <div class="band">Principal Alocado por Operação</div>
 
-          <!-- mini-tabela logo abaixo do título -->
           <div class="mini-afbar">
             <div id="miniAF" class="mini-af" aria-label="Detalhe Duplicatas AF">
               <table>
@@ -335,7 +334,7 @@ function setupTabs(){
 }
 
 /* =========================
-   OPÇÕES DE BARRA (usar igual nos dois gráficos)
+   OPÇÕES DE BARRA
    ========================= */
 function commonBarOptions(maxVal){
   return {
@@ -365,20 +364,24 @@ function renderPage1(sections){
   document.getElementById('kpiPL').textContent = pl? brlFull(pl[7]) : '–';
   document.getElementById('dbPL').textContent  = 'Data-base: ' + toBRDate(pl && pl[6]);
 
-  // Índice de Subordinação (vem de B → Cotas Sênior)
+  // **Caixa total (correção)**
+  const caixaTot = A.find('(=) Caixa e Disponibilidades');
+  document.getElementById('kpiCaixa').textContent = caixaTot ? brlFull(caixaTot[7]) : '–';
+  document.getElementById('dbCaixa').textContent  = 'Data-base: ' + toBRDate(caixaTot && caixaTot[6]);
+
+  // Índice de Subordinação (B → Cotas Sênior)
   const idxSenior = B.find('Índice de Subordinação Cotas Sênior') || B.find('Índice de Subordinação Cotas Sênior ');
   document.getElementById('kpiSubInline').textContent = idxSenior? pct1(idxSenior[7]) : '–';
 
-  // Novo card: Valor Disponível p/ Risco Sacado (B → % de PL Alocado em Risco Sacado, col 9)
+  // Valor Disponível p/ Risco Sacado (B → % de PL Alocado em Risco Sacado, col 9)
   const riscoDisp = B.find('% de PL Alocado em Risco Sacado');
   document.getElementById('kpiRisco').textContent = riscoDisp? brlFull(riscoDisp[9]) : '–';
-  // usa a mesma data do (=) Principal Alocado como referência
   const principalDate = A.find('(=) Principal Alocado');
   document.getElementById('dbRisco').textContent = 'Data-base: ' + toBRDate(principalDate && principalDate[6]);
 
   renderTabelaPL_A(A);
   renderTabelaCaixa_A(A);
-  renderPrincipal_A(A);     // agora com mesma formatação do “Valores a Receber”
+  renderPrincipal_A(A);
   renderShare_A(A);
   renderReceber_A(A);
   renderPrazo_A(A);
@@ -415,7 +418,6 @@ function renderPrincipal_A(A){
   const comAF = A.find('com alienação');
   const semAF = A.find('Sem Alienação');
 
-  // mini-tabela
   document.getElementById('valSemAF').textContent = semAF? brlFull(semAF[7]) : '–';
   document.getElementById('valComAF').textContent = comAF? brlFull(comAF[7]) : '–';
 
@@ -535,7 +537,6 @@ function renderMonit_B(B){
 }
 
 function renderClientes_C(C){
-  // Sacados
   const sacHeaderIdx = C.rows.findIndex(r => (r[4]||'').trim().toLowerCase()==='sacados');
   const riscoHeaderIdx = C.rows.findIndex(r => (r[4]||'').trim().toLowerCase()==='risco sacado');
 
