@@ -18,6 +18,7 @@
     --cinza-mto-escuro:#666666;  /* HEX5 */
     --verde-ok:#16a34a;
     --vermelho-no:#dc2626;
+    --cinza-claro:#e5e7eb;
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#eef4fb;color:#0f172a}
@@ -74,10 +75,13 @@
   .page.active{display:block}
 
   /* ========= TABELAS ESPECIAIS (Página 2) ========= */
+  /* Cabeçalho cinza-escuro */
+  #tbMonit thead th{background:var(--cinza-mto-escuro) !important; color:#fff}
   .subsec{background:var(--azul-claro);font-weight:900;color:#0f172a}
+  .subsec-gray{background:var(--cinza-claro);font-weight:900;color:#0f172a}
   .tag-ok{background:rgba(22,163,74,.12);color:var(--verde-ok);padding:2px 8px;border-radius:999px;font-weight:800;display:inline-block}
   .tag-no{background:rgba(220,38,38,.12);color:var(--vermelho-no);padding:2px 8px;border-radius:999px;font-weight:800;display:inline-block}
-  .tfoot-note{font-size:13px;color:#334155;opacity:.95;text-align:right;padding-top:6px}
+  .highlight-row{font-weight:900;border-bottom:2px solid #334155}
 </style>
 </head>
 <body>
@@ -124,7 +128,7 @@
     <div class="wrap">
       <div class="grid">
 
-        <!-- PL (com Índice de Subordinação dentro — se houver) -->
+        <!-- PL -->
         <div class="card col-6">
           <div class="band">Patrimônio Líquido (PL)</div>
           <div id="kpiPL" class="kpi-valor">–</div>
@@ -213,12 +217,11 @@
         <table class="table" id="tbSacados">
           <thead>
             <tr>
-              <th>Nome do sacado</th><th class="center">Unidade</th><th class="center">Valor alocado</th><th class="center">Código NX Boats</th><th>Observação</th>
+              <th>Nome do sacado</th><th class="center">Unidade</th><th class="center">Valor alocado</th><th class="center">Código NX Boats</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
-        <div class="tfoot-note">Observação: Considera valor presente atualizado dos DCs</div>
       </div>
 
       <div class="card col-12">
@@ -226,12 +229,11 @@
         <table class="table" id="tbRiscoSac">
           <thead>
             <tr>
-              <th>Nome do Cedente</th><th class="center">Unidade</th><th class="center">Valor alocado</th><th>Observação</th>
+              <th>Nome do Cedente</th><th class="center">Unidade</th><th class="center">Valor alocado</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
-        <div class="tfoot-note">Observação: Considera valor presente atualizado dos DCs</div>
       </div>
 
       <!-- Receita Naval Serviços Financeiros -->
@@ -245,7 +247,7 @@
 
 <script>
 /* =========================
-   LOGIN / AUTENTICAÇÃO (igual ao seu antigo)
+   LOGIN / AUTENTICAÇÃO
    ========================= */
 const USER_EXPECTED = 'fidcnxboats';
 const PASS_EXPECTED = 'fidcnxb2025';
@@ -253,23 +255,18 @@ const REMEMBER_KEY  = 'nxAuth';
 const REMEMBER_TTL  = 30 * 24 * 60 * 60 * 1000; // 30 dias
 
 function rememberNow(){ localStorage.setItem(REMEMBER_KEY, JSON.stringify({ok:true, ts:Date.now()})); }
-function isRemembered(){
-  try{ const o=JSON.parse(localStorage.getItem(REMEMBER_KEY)||'null'); return o && o.ok && (Date.now()-o.ts)<REMEMBER_TTL; }catch(e){ return false; }
-}
+function isRemembered(){ try{ const o=JSON.parse(localStorage.getItem(REMEMBER_KEY)||'null'); return o && o.ok && (Date.now()-o.ts)<REMEMBER_TTL; }catch(e){ return false; } }
 function showApp(){ document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; bootDashboard(); }
 function handleLogin(){
   const u=document.getElementById('user').value.trim();
   const p=document.getElementById('pass').value.trim();
   const remember=document.getElementById('remember').checked;
   const err=document.getElementById('loginError');
-  if(u===USER_EXPECTED && p===PASS_EXPECTED){ err.style.display='none'; if(remember) rememberNow(); showApp(); }
-  else err.style.display='block';
+  if(u===USER_EXPECTED && p===PASS_EXPECTED){ err.style.display='none'; if(remember) rememberNow(); showApp(); } else err.style.display='block';
 }
 function prepLoginUI(){
   document.getElementById('btnEnter').addEventListener('click', handleLogin);
-  document.getElementById('btnClear').addEventListener('click', ()=>{
-    document.getElementById('user').value=''; document.getElementById('pass').value=''; document.getElementById('loginError').style.display='none';
-  });
+  document.getElementById('btnClear').addEventListener('click', ()=>{ document.getElementById('user').value=''; document.getElementById('pass').value=''; document.getElementById('loginError').style.display='none'; });
   document.getElementById('pass').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
   if(isRemembered()) showApp();
 }
@@ -284,9 +281,10 @@ const C_CCB        = '#286DAC';
 const C_DUP        = '#666666';
 const C_RISCO      = '#118DFF';
 const C_AZUL_CLARO = '#A7CCEB';
+const C_CINZA_ESCURO = '#666666';
 
 const brlFull = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});
-const brlK    = v => (Number(v)/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}); // mil
+const brlK    = v => (Number(v)/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
 const pct1 = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1});
 function toBRDate(str){ if(!str) return '–'; const d=new Date(str); return isNaN(d)? String(str) : d.toLocaleDateString('pt-BR'); }
 
@@ -294,36 +292,15 @@ function toBRDate(str){ if(!str) return '–'; const d=new Date(str); return isN
    PARSE DO NOVO JSON (1..11)
    ========================= */
 function parseNew(rows){
-  // Garante objeto com strings "1".."11"
-  const norm = rows.map(r=>{
-    const out={}; for(let i=1;i<=11;i++) out[i]= r[String(i)] ?? null; return out;
-  });
-
-  // Quebra por letra da coluna 2
+  const norm = rows.map(r=>{ const out={}; for(let i=1;i<=11;i++) out[i]= r[String(i)] ?? null; return out; });
   const sec = { A:[], a:[], B:[], b:[], C:[], c:[], D:[], d:[] };
-  norm.forEach(r=>{
-    const k=r[2]; if(k && sec.hasOwnProperty(k)) sec[k].push(r);
-  });
-
-  // Helpers por cessão
-  const A = {
-    rows: sec['a'],
-    find: name => sec['a'].find(r => (r[4]||'').trim().toLowerCase() === name.trim().toLowerCase())
+  norm.forEach(r=>{ const k=r[2]; if(k && sec.hasOwnProperty(k)) sec[k].push(r); });
+  return {
+    A:{ rows:sec['a'], find:name=>sec['a'].find(r => (r[4]||'').trim().toLowerCase()===name.trim().toLowerCase()) },
+    B:{ rows:sec['b'] },
+    C:{ rows:sec['c'] },
+    D:{ rows:sec['d'] }
   };
-
-  const B = {
-    rows: sec['b']
-  };
-
-  const C = {
-    rows: sec['c']
-  };
-
-  const D = {
-    rows: sec['d']
-  };
-
-  return {A,B,C,D};
 }
 
 /* =========================
@@ -342,9 +319,44 @@ function setupTabs(){
 }
 
 /* =========================
-   RENDER PAGE 1 (A)
+   PÁGINA 1 (A)
    ========================= */
 let chartPrincipal, chartShare, chartReceber;
+
+const dupArrowsPlugin = {
+  id:'dupArrows',
+  afterDatasetsDraw(chart, args, pluginOptions){
+    const refs = chart.$dupArrows;
+    if(!refs) return;
+    const ctx = chart.ctx;
+    ctx.save();
+    ctx.setLineDash([4,3]);
+    ctx.strokeStyle = C_CINZA_ESCURO;
+    ctx.lineWidth = 1.5;
+
+    const from = refs.from;
+    refs.targets.forEach(t=>{
+      // linha
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(t.x, t.y);
+      ctx.stroke();
+
+      // pequena seta
+      const ang = Math.atan2(t.y-from.y, t.x-from.x);
+      const ah = 6; // tamanho da seta
+      ctx.beginPath();
+      ctx.moveTo(t.x, t.y);
+      ctx.lineTo(t.x - ah*Math.cos(ang - Math.PI/6), t.y - ah*Math.sin(ang - Math.PI/6));
+      ctx.lineTo(t.x - ah*Math.cos(ang + Math.PI/6), t.y - ah*Math.sin(ang + Math.PI/6));
+      ctx.closePath();
+      ctx.fillStyle = C_CINZA_ESCURO;
+      ctx.fill();
+    });
+
+    ctx.restore();
+  }
+};
 
 function renderPage1(sections){
   const {A} = sections;
@@ -354,55 +366,34 @@ function renderPage1(sections){
   document.getElementById('kpiPL').textContent = pl? brlFull(pl[7]) : '–';
   document.getElementById('dbPL').textContent  = 'Data-base: ' + toBRDate(pl && pl[6]);
 
-  // Índice de Subordinação (se existir na B, preenche; senão esconde)
-  const subNode = document.getElementById('kpiSubInline');
-  // tenta coletar da seção B (Índice de Subordinação Cotas Sênior)
-  let subVal = null; // se quiser, pode pegar de B depois do parse
-  if(subVal==null){
-    // esconde linha se indisponível
-    subNode.textContent = '–';
-  }
-
-  // Caixa
   const cx = A.find('(=) Caixa e Disponibilidades');
   document.getElementById('kpiCaixa').textContent = cx? brlFull(cx[7]) : '–';
   document.getElementById('dbCaixa').textContent  = 'Data-base: ' + toBRDate(cx && cx[6]);
 
-  // Tabelas PL e Caixa
   renderTabelaPL_A(A);
   renderTabelaCaixa_A(A);
-
-  // Principal Alocado (gráfico + balões com/sem AF)
   renderPrincipal_A(A);
-  // Share
   renderShare_A(A);
-  // Valores a Receber
   renderReceber_A(A);
-  // Prazo Médio
   renderPrazo_A(A);
 }
 
 function renderTabelaPL_A(A){
   const tbody=document.querySelector('#tbPL tbody'); tbody.innerHTML='';
-  const itens=[
-    'Cotas Sêniores','Cotas Mezanino','Cotas Subordinadas'
-  ];
-  itens.forEach(label=>{
+  ['Cotas Sêniores','Cotas Mezanino','Cotas Subordinadas'].forEach(label=>{
     const r=A.find(label); const v=r? Number(r[7])||0 : 0;
     const tr=document.createElement('tr');
     tr.innerHTML=`<td>${label}</td><td class="center">${brlFull(v)}</td>`;
     tbody.appendChild(tr);
   });
 }
-
 function renderTabelaCaixa_A(A){
   const tbody=document.querySelector('#tbCaixa tbody'); tbody.innerHTML='';
-  const itens=[
+  [
     {disp:'(+) Liquidez Imediata', key:'(+) Liquidez Imediata'},
     {disp:'(+) Kanastra', key:'(+) Kanastra'},
     {disp:'(+) Santander', key:'(+) Santander'}
-  ];
-  itens.forEach(it=>{
+  ].forEach(it=>{
     const r=A.find(it.key); const v=r? Number(r[7])||0 : 0;
     const tr=document.createElement('tr');
     tr.innerHTML=`<td>${it.disp}</td><td class="center">${brlFull(v)}</td>`;
@@ -428,30 +419,28 @@ function renderPrincipal_A(A){
   const colors=[C_TOTAL,C_DUP,C_CCB,C_RISCO];
 
   const dupIndex=labels.indexOf('Duplicatas');
-
   const ctx=document.getElementById('chartPrincipal');
   if(chartPrincipal) chartPrincipal.destroy();
+
   chartPrincipal=new Chart(ctx,{
     type:'bar',
     data:{ labels, datasets:[
       { data, backgroundColor: colors },
-      // dataset “pontos” para balões de Com/sem AF posicionados sobre a barra de Duplicatas
-      { type:'scatter',
+      { // dataset “pontos” para posicionar os balões
+        type:'scatter',
         data:[
           {x: dupIndex, y: data[dupIndex]},
           {x: dupIndex, y: data[dupIndex]}
         ],
-        pointRadius:0, // invisível
+        pointRadius:0
       }
     ]},
     options:{
       plugins:{
         legend:{display:false},
         datalabels:{
-          // labels do dataset 0 (barras)
           formatter:(v,ctx)=>{
-            if(ctx.datasetIndex===0) return 'R$ ' + (Number(v)||0).toLocaleString('pt-BR',{maximumFractionDigits:0});
-            // dataset de balões
+            if(ctx.datasetIndex===0) return 'R$ ' + (Number(v)||0).toLocaleString('pt-BR');
             if(ctx.datasetIndex===1){
               if(ctx.dataIndex===0 && comAF)  return 'Com AF: '  + brlFull(comAF[7]);
               if(ctx.dataIndex===1 && semAF)  return 'Sem AF: '  + brlFull(semAF[7]);
@@ -460,24 +449,39 @@ function renderPrincipal_A(A){
           },
           align:(ctx)=> ctx.datasetIndex===0 ? 'end' : 'top',
           anchor:(ctx)=> ctx.datasetIndex===0 ? 'end' : 'end',
-          offset:(ctx)=> ctx.datasetIndex===0 ? 0 : (ctx.dataIndex===0 ? -10 : -40),
-          backgroundColor:(ctx)=> ctx.datasetIndex===1 ? C_AZUL_CLARO : null,
-          color:(ctx)=> ctx.datasetIndex===1 ? '#0f172a' : '#000',
+          // desloca os balões para cima e para lados diferentes
+          offset:(ctx)=>{
+            if(ctx.datasetIndex===1){
+              return ctx.dataIndex===0 ? -28 : -58;
+            }
+            return 0;
+          },
+          backgroundColor:(ctx)=> ctx.datasetIndex===1 ? C_CINZA_ESCURO : null,
+          color:(ctx)=> ctx.datasetIndex===1 ? '#fff' : '#000',
           borderRadius:(ctx)=> ctx.datasetIndex===1 ? 12 : 0,
-          padding:(ctx)=> ctx.datasetIndex===1 ? {top:4,right:8,bottom:4,left:8} : 0,
+          padding:(ctx)=> ctx.datasetIndex===1 ? {top:5,right:8,bottom:5,left:8} : 0,
           font:(ctx)=> ctx.datasetIndex===1 ? {weight:'800',size:11} : {weight:'700',size:14},
           clip:false
         },
         tooltip:{ callbacks:{ label:(c)=> 'R$ ' + (Number(c.parsed.y)||0).toLocaleString('pt-BR') } }
       },
-      layout:{ padding:{top:20,right:20,left:10} },
+      layout:{ padding:{ top:28, right:28, left:10 } },
       scales:{
         x:{ grid:{display:false} },
-        y:{ grid:{display:false}, ticks:{display:false}, beginAtZero:true, suggestedMax: Math.max(...data)*1.15 }
+        y:{ grid:{display:false}, ticks:{display:false}, beginAtZero:true, suggestedMax: Math.max(...data)*1.2 }
       }
     },
-    plugins:[ChartDataLabels]
+    plugins:[ChartDataLabels, dupArrowsPlugin]
   });
+
+  // Referências para o plugin das setas
+  const metaBars = chartPrincipal.getDatasetMeta(0);
+  const metaBalloons = chartPrincipal.getDatasetMeta(1);
+  const fromElem = metaBars.data[dupIndex];
+  chartPrincipal.$dupArrows = {
+    from: { x: fromElem.x, y: fromElem.y-6 },
+    targets: metaBalloons.data.map((p,i)=>({ x:p.x + (i===0?-18:18), y:p.y - (i===0?34:64) })) // ajusta direção
+  };
 
   document.getElementById('dbPrincipal').textContent = 'Data-base: ' + toBRDate(total && total[6]);
 }
@@ -488,33 +492,15 @@ function renderShare_A(A){
   if(chartShare) chartShare.destroy();
   chartShare=new Chart(ctx,{
     type:'doughnut',
-    data:{
-      labels:['Duplicatas','CCB','Risco Sacado'],
-      datasets:[{ data:[dup?dup[7]:0, ccb?ccb[7]:0, ris?ris[7]:0], backgroundColor:[C_DUP,C_CCB,C_RISCO] }]
-    },
-    options:{
-      plugins:{
-        legend:{ position:'bottom' },
-        datalabels:{
-          formatter:(v,ctx)=>{
-            const tot=ctx.dataset.data.reduce((a,b)=>a+Number(b||0),0);
-            return tot? pct1(v/tot) : '';
-          },
-          color:'#fff', font:{weight:'700', size:16}
-        }
-      }
-    },
+    data:{ labels:['Duplicatas','CCB','Risco Sacado'], datasets:[{ data:[dup?dup[7]:0, ccb?ccb[7]:0, ris?ris[7]:0], backgroundColor:[C_DUP,C_CCB,C_RISCO] }] },
+    options:{ plugins:{ legend:{position:'bottom'}, datalabels:{ formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+Number(b||0),0); return t? pct1(v/t) : ''; }, color:'#fff', font:{weight:'700', size:16} } } },
     plugins:[ChartDataLabels]
   });
-  // data-base acompanhar “(=) Principal Alocado”
   const total=A.find('(=) Principal Alocado');
   document.getElementById('dbShare').textContent = 'Data-base: ' + toBRDate(total && total[6]);
 }
-
 function renderReceber_A(A){
   const tot=A.find('(=) Valores a Receber');
-  const ccb=A.find('CCB'); // atenção: existem várias “CCB”; pegaremos a que aparece depois da linha "(=) Valores a Receber"
-  // Para simplificar: use os 3 específicos após a linha de "(=) Valores a Receber"
   const idx = A.rows.indexOf(tot);
   let ccbRec, dupRec, risRec;
   if(idx>=0){
@@ -523,55 +509,22 @@ function renderReceber_A(A){
     risRec = A.rows[idx+3] && (A.rows[idx+3][4]||'').trim().toLowerCase()==='risco sacado' ? A.rows[idx+3] : null;
   }
   const labels=['Total','Duplicatas','CCB','Risco Sacado'];
-  const data=[
-    tot? Number(tot[7])||0 : 0,
-    dupRec? Number(dupRec[7])||0 : 0,
-    ccbRec? Number(ccbRec[7])||0 : 0,
-    risRec? Number(risRec[7])||0 : 0
-  ];
+  const data=[ tot?Number(tot[7])||0:0, dupRec?Number(dupRec[7])||0:0, ccbRec?Number(ccbRec[7])||0:0, risRec?Number(risRec[7])||0:0 ];
   const ctx=document.getElementById('chartReceber');
   if(chartReceber) chartReceber.destroy();
-  chartReceber=new Chart(ctx,{
-    type:'bar',
-    data:{ labels, datasets:[{ data, backgroundColor:[C_TOTAL,C_DUP,C_CCB,C_RISCO] }] },
-    options:{
-      plugins:{
-        legend:{display:false},
-        datalabels:{ anchor:'end', align:'end', formatter:(v)=> 'R$ ' + (Number(v)||0).toLocaleString('pt-BR'), color:'#000', font:{weight:'700',size:14} },
-        tooltip:{ callbacks:{ label:(c)=> 'R$ ' + (Number(c.parsed.y)||0).toLocaleString('pt-BR') } }
-      },
-      layout:{ padding:{ top:20 } },
-      scales:{ x:{grid:{display:false}}, y:{grid:{display:false}, ticks:{display:false}, beginAtZero:true, suggestedMax: Math.max(...data)*1.15 } }
-    },
-    plugins:[ChartDataLabels]
-  });
+  chartReceber=new Chart(ctx,{ type:'bar', data:{labels,datasets:[{data,backgroundColor:[C_TOTAL,C_DUP,C_CCB,C_RISCO]}]}, options:{ plugins:{ legend:{display:false}, datalabels:{anchor:'end',align:'end',formatter:(v)=>'R$ '+(Number(v)||0).toLocaleString('pt-BR'),color:'#000',font:{weight:'700',size:14}}, tooltip:{callbacks:{label:(c)=>'R$ '+(Number(c.parsed.y)||0).toLocaleString('pt-BR')}} }, layout:{padding:{top:20}}, scales:{x:{grid:{display:false}}, y:{grid:{display:false},ticks:{display:false},beginAtZero:true,suggestedMax:Math.max(...data)*1.15}} }, plugins:[ChartDataLabels]});
   document.getElementById('dbReceber').textContent='Data-base: ' + toBRDate(tot && tot[6]);
 }
-
 function renderPrazo_A(A){
-  // Total + CCB + Duplicatas + Risco Sacado (em dias)
-  const total = A.find('(=) Prazo Médio ');
-  const ccb   = A.find('CCB');
-  const dup   = A.find('Duplicatas');
-  const ris   = A.find('Risco Sacado');
-
-  const linhas=[
-    {label:'(=) Prazo Médio', valor: total? Number(total[7])||0 : 0},
-    {label:'Duplicatas', valor: dup? Number(dup[7])||0 : 0},
-    {label:'CCB', valor: ccb? Number(ccb[7])||0 : 0},
-    {label:'Risco Sacado', valor: ris? Number(ris[7])||0 : 0},
-  ];
-  const tb=document.getElementById('tbodyPrazo'); tb.innerHTML='';
-  linhas.forEach(r=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r.label}</td><td class="center">${(Number(r.valor)||0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>`;
-    tb.appendChild(tr);
-  });
+  const total = A.find('(=) Prazo Médio '), ccb=A.find('CCB'), dup=A.find('Duplicatas'), ris=A.find('Risco Sacado');
+  const linhas=[ {label:'(=) Prazo Médio', valor: total? Number(total[7])||0 : 0}, {label:'Duplicatas', valor: dup? Number(dup[7])||0 : 0}, {label:'CCB', valor: ccb? Number(ccb[7])||0 : 0}, {label:'Risco Sacado', valor: ris? Number(ris[7])||0 : 0} ];
+  const tb=document.getElementById("tbodyPrazo"); tb.innerHTML='';
+  linhas.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${r.label}</td><td class="center">${(Number(r.valor)||0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>`; tb.appendChild(tr); });
   document.getElementById('dbPrazo').textContent='Data-base: ' + toBRDate(total && total[6]);
 }
 
 /* =========================
-   RENDER PAGE 2 (B, C, D)
+   PÁGINA 2 (B, C, D)
    ========================= */
 function renderPage2(sections){
   renderMonit_B(sections.B);
@@ -581,38 +534,33 @@ function renderPage2(sections){
 
 function renderMonit_B(B){
   const tbody=document.querySelector('#tbMonit tbody'); tbody.innerHTML='';
-
   const rows=B.rows||[];
-
-  // Percorre e escreve blocos com linhas de título (Subordinação, Alocação, Por Operação, Por Sacado, Inadimplência)
-  const isTitle = v => ['Subordinação','Alocação','Por Operação','Por Sacado','Inadimplência'].includes((v||'').trim());
+  const titleBlue = v => ['Subordinação','Alocação','Inadimplência'].includes((v||'').trim());
+  const titleGray = v => ['Por Operação','Por Sacado'].includes((v||'').trim());
 
   rows.forEach(r=>{
-    const nome=(r[4]||'').trim();
-    if(!nome) return;
+    const nome=(r[4]||'').trim(); if(!nome) return;
 
-    if(isTitle(nome)){
+    if(titleBlue(nome) || titleGray(nome)){
       const tr=document.createElement('tr');
-      tr.className='subsec';
+      tr.className = titleGray(nome) ? 'subsec-gray' : 'subsec';
       tr.innerHTML=`<td colspan="8">${nome}</td>`;
       tbody.appendChild(tr);
       return;
     }
 
-    // Linhas de indicador
     const unidade = r[5]||'';
     const dataB   = r[6] ? toBRDate(r[6]) : '';
-    const valAt   = r[7]!=null ? r[5]==='%' ? pct1(r[7]) : brlFull(r[7]) : '';
+    const valAt   = r[7]!=null ? (r[5]==='%' ? pct1(r[7]) : brlFull(r[7])) : '';
     const alvo    = r[8]!=null ? (r[5]==='%' ? pct1(r[8]) : brlFull(r[8])) : '';
     const disp    = r[9]!=null ? brlFull(r[9]) : '';
     const desc    = r[10]||'';
     const enqua   = (r[11]||'').toString().trim().toUpperCase();
+    const tag = enqua==='DESENQUADRADO' ? `<span class="tag-no">DESENQUADRADO</span>` : (enqua==='OK' ? `<span class="tag-ok">OK</span>` : '');
 
-    const tag = enqua==='DESENQUADRADO'
-      ? `<span class="tag-no">DESENQUADRADO</span>`
-      : (enqua==='OK' ? `<span class="tag-ok">OK</span>` : '');
-
+    const isTopLine = ['TOP 1 Sacados','TOP 5 Sacados','TOP 10 Sacados'].includes(nome);
     const tr=document.createElement('tr');
+    if(isTopLine) tr.classList.add('highlight-row');
     tr.innerHTML = `
       <td>${nome}</td>
       <td class="center">${unidade||''}</td>
@@ -657,7 +605,6 @@ function renderClientes_C(C){
       <td class="center">${r[6]||''}</td>
       <td class="center">${brlFull(r[5])}</td>
       <td class="center">${r[7]||''}</td>
-      <td>${r[8]||''}</td>
     `;
     tbS.appendChild(tr);
   });
@@ -669,7 +616,6 @@ function renderClientes_C(C){
       <td>${(r[4]||'').trim()}</td>
       <td class="center">${r[6]||''}</td>
       <td class="center">${brlFull(r[5])}</td>
-      <td>${r[8]||''}</td>
     `;
     tbR.appendChild(tr);
   });
@@ -677,7 +623,7 @@ function renderClientes_C(C){
 
 let chartReceita;
 function renderReceita_D(D){
-  const rows = (D.rows||[]).filter(r => r[4] && r[7]!=null); // mês/ano + valor
+  const rows = (D.rows||[]).filter(r => r[4] && r[7]!=null);
   const labels = rows.map(r => (r[4]||'').trim());
   const data   = rows.map(r => Number(r[7])||0);
 
@@ -689,16 +635,10 @@ function renderReceita_D(D){
     options:{
       plugins:{
         legend:{display:false},
-        datalabels:{
-          formatter:(v)=> v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' mil',
-          anchor:'end', align:'end', color:'#000', font:{weight:'800',size:12}
-        },
+        datalabels:{ formatter:(v)=> v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' mil', anchor:'end', align:'end', color:'#000', font:{weight:'800',size:12} },
         tooltip:{ callbacks:{ label:(c)=> 'R$ ' + (Number(c.raw)*1000).toLocaleString('pt-BR') } }
       },
-      scales:{
-        x:{ grid:{display:false} },
-        y:{ grid:{display:false}, ticks:{ display:false }, beginAtZero:true, suggestedMax: Math.max(...data)/1000 * 1.25 }
-      },
+      scales:{ x:{ grid:{display:false} }, y:{ grid:{display:false}, ticks:{ display:false }, beginAtZero:true, suggestedMax: Math.max(...data)/1000 * 1.25 } },
       layout:{ padding:{ top:20 } }
     },
     plugins:[ChartDataLabels]
@@ -710,7 +650,6 @@ function renderReceita_D(D){
    ========================= */
 function bootDashboard(){
   setupTabs();
-
   const bust=`?v=${Date.now()}`;
   fetch(DEFAULT_JSON + bust)
     .then(r=>{ if(!r.ok) throw new Error('Falha ao ler JSON'); return r.json(); })
@@ -722,7 +661,7 @@ function bootDashboard(){
     .catch(err=> alert('Erro ao carregar JSON: ' + err.message));
 }
 
-Chart.register(ChartDataLabels);
+Chart.register(ChartDataLabels, dupArrowsPlugin);
 window.addEventListener('DOMContentLoaded', prepLoginUI);
 </script>
 </body>
