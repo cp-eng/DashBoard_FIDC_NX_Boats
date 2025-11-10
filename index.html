@@ -16,10 +16,11 @@
     --azul-claro:#A7CCEB;        /* HEX3 */
     --azul-destaque:#118DFF;     /* HEX4 */
     --cinza-mto-escuro:#666666;  /* HEX5 */
+    --verde-ok:#16a34a;
+    --vermelho-no:#dc2626;
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#eef4fb;color:#0f172a}
-
   header{
     background:var(--azul-muito-escuro);
     color:#fff;
@@ -29,7 +30,6 @@
     text-align:center;
     letter-spacing:.3px
   }
-
   .wrap{max-width:1200px;margin:18px auto;padding:0 12px}
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
   .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
@@ -38,11 +38,11 @@
   .kpi-valor.center{text-align:center}
   .sub-title{margin:12px 0 4px;font-weight:800;color:#0f172a}
   .table{width:100%;border-collapse:collapse;font-size:14px;background:#fff}
-  .table th,.table td{border-bottom:1px solid #dbe5f1;padding:6px 8px;text-align:left}
+  .table th,.table td{border-bottom:1px solid #dbe5f1;padding:6px 8px;text-align:left;vertical-align:top}
   .table th{background:#f4f8fd}
   .center{text-align:center}
-
   .dbase{margin-top:8px;font-size:14px;color:#334155;opacity:.9;text-align:right}
+  .obs{margin-top:4px;font-size:14px;color:#334155;opacity:.9;text-align:right}
 
   .col-12{grid-column:span 12}.col-8{grid-column:span 12}.col-4{grid-column:span 12}.col-6{grid-column:span 12}
   @media(min-width:1000px){.col-8{grid-column:span 8}.col-4{grid-column:span 4}.col-6{grid-column:span 6}}
@@ -65,7 +65,19 @@
   .btn.sec{background:#e2e8f0;color:#0f172a;font-weight:800}
   .muted{font-size:12px;color:#64748b;margin-top:8px}
 
+  /* ========= TABS ========= */
   #app{display:none}
+  .tabs{display:flex;gap:8px;margin:0 auto 12px;max-width:1200px;padding:0 12px}
+  .tabbtn{background:#dbe5f1;border:none;border-radius:999px;padding:8px 14px;font-weight:800;color:#0f172a;cursor:pointer}
+  .tabbtn.active{background:var(--azul-escuro);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+  .page{display:none}
+  .page.active{display:block}
+
+  /* ========= TABELAS ESPECIAIS (Página 2) ========= */
+  .subsec{background:var(--azul-claro);font-weight:900;color:#0f172a}
+  .tag-ok{background:rgba(22,163,74,.12);color:var(--verde-ok);padding:2px 8px;border-radius:999px;font-weight:800;display:inline-block}
+  .tag-no{background:rgba(220,38,38,.12);color:var(--vermelho-no);padding:2px 8px;border-radius:999px;font-weight:800;display:inline-block}
+  .tfoot-note{font-size:13px;color:#334155;opacity:.95;text-align:right;padding-top:6px}
 </style>
 </head>
 <body>
@@ -101,280 +113,613 @@
 <div id="app">
   <header>Dashboard FIDC NX Boats</header>
 
-  <div class="wrap">
-    <div class="grid">
-      <!-- PL (com Índice de Subordinação dentro) -->
-      <div class="card col-6">
-        <div class="band">Patrimônio Líquido (PL)</div>
-        <div id="kpiPL" class="kpi-valor">–</div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tabbtn active" data-target="#page1">Página 1 — Resumo</button>
+    <button class="tabbtn" data-target="#page2">Página 2 — Monitoramento, Clientes e Receita</button>
+  </div>
 
-        <div class="sub-title">Índice de Subordinação</div>
-        <div id="kpiSubInline" class="kpi-valor">–</div>
+  <!-- ===== PAGE 1 (Cessão A) ===== -->
+  <section id="page1" class="page active">
+    <div class="wrap">
+      <div class="grid">
 
-        <h4 style="margin:12px 0 6px">Composição PL</h4>
-        <table class="table" id="tbPL">
-          <thead><tr><th>Classe</th><th class="center">Valor</th></tr></thead>
-          <tbody></tbody>
-        </table>
-        <div class="dbase" id="dbPL">Data-base: –</div>
-      </div>
+        <!-- PL (com Índice de Subordinação dentro — se houver) -->
+        <div class="card col-6">
+          <div class="band">Patrimônio Líquido (PL)</div>
+          <div id="kpiPL" class="kpi-valor">–</div>
+          <div class="sub-title">Índice de Subordinação</div>
+          <div id="kpiSubInline" class="kpi-valor">–</div>
 
-      <!-- Caixa -->
-      <div class="card col-6">
-        <div class="band">Caixa</div>
-        <div id="kpiCaixa" class="kpi-valor">–</div>
+          <h4 style="margin:12px 0 6px">Composição PL</h4>
+          <table class="table" id="tbPL">
+            <thead><tr><th>Classe</th><th class="center">Valor</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="dbase" id="dbPL">Data-base: –</div>
+        </div>
 
-        <h4 style="margin:12px 0 6px">Composição Caixa</h4>
-        <table class="table" id="tbCaixa">
-          <thead><tr><th>Alocação de Caixa</th><th class="center">Valor</th></tr></thead>
-          <tbody></tbody>
-        </table>
-        <div class="dbase" id="dbCaixa">Data-base: –</div>
-      </div>
+        <!-- Caixa -->
+        <div class="card col-6">
+          <div class="band">Caixa</div>
+          <div id="kpiCaixa" class="kpi-valor">–</div>
 
-      <!-- Valor disponível para Risco Sacado -->
-      <div class="card col-6">
-        <div class="band">Valor Disponível para Risco Sacado</div>
-        <div id="kpiRisco" class="kpi-valor center">–</div>
-        <div class="dbase" id="dbRisco">Data-base: –</div>
-      </div>
+          <h4 style="margin:12px 0 6px">Composição Caixa</h4>
+          <table class="table" id="tbCaixa">
+            <thead><tr><th>Alocação de Caixa</th><th class="center">Valor</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="dbase" id="dbCaixa">Data-base: –</div>
+        </div>
 
-      <!-- Principal Alocado (barras) + Share (rosca) -->
-      <div class="card col-8">
-        <div class="band">Principal Alocado por Operação</div>
-        <canvas id="chartPrincipal" height="140"></canvas>
-        <div class="dbase" id="dbPrincipal">Data-base: –</div>
-      </div>
-      <div class="card col-4">
-        <div class="band">Share da Carteira</div>
-        <canvas id="chartShare" height="140"></canvas>
-        <div class="dbase" id="dbShare">Data-base: –</div>
-      </div>
+        <!-- Principal Alocado (barras) + Share (rosca) -->
+        <div class="card col-8">
+          <div class="band">Principal Alocado por Operação</div>
+          <canvas id="chartPrincipal" height="160"></canvas>
+          <div class="dbase" id="dbPrincipal">Data-base: –</div>
+          <div class="obs">Considera valor presente atualizado dos DCs</div>
+        </div>
+        <div class="card col-4">
+          <div class="band">Share da Carteira</div>
+          <canvas id="chartShare" height="160"></canvas>
+          <div class="dbase" id="dbShare">Data-base: –</div>
+        </div>
 
-      <!-- Valores a Receber + Prazo Médio -->
-      <div class="card col-8">
-        <div class="band">Valores a Receber por Operação</div>
-        <canvas id="chartReceber" height="140"></canvas>
-        <div class="dbase" id="dbReceber">Data-base: –</div>
-      </div>
-      <div class="card col-4">
-        <div class="band">Prazo Médio por Operação</div>
-        <table class="table">
-          <thead><tr><th>Operação</th><th class="center">Dias</th></tr></thead>
-          <tbody id="tbodyPrazo"></tbody>
-        </table>
-        <div class="dbase" id="dbPrazo">Data-base: –</div>
+        <!-- Valores a Receber + Prazo Médio -->
+        <div class="card col-8">
+          <div class="band">Valores a Receber por Operação</div>
+          <canvas id="chartReceber" height="160"></canvas>
+          <div class="dbase" id="dbReceber">Data-base: –</div>
+          <div class="obs">Considera valor presente atualizado dos DCs</div>
+        </div>
+        <div class="card col-4">
+          <div class="band">Prazo Médio por Operação</div>
+          <table class="table">
+            <thead><tr><th>Operação</th><th class="center">Dias</th></tr></thead>
+            <tbody id="tbodyPrazo"></tbody>
+          </table>
+          <div class="dbase" id="dbPrazo">Data-base: –</div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- ===== PAGE 2 (B, C, D) ===== -->
+  <section id="page2" class="page">
+    <div class="wrap grid">
+      <!-- Índices de Monitoramento -->
+      <div class="card col-12">
+        <div class="band">Índices de Monitoramento</div>
+        <table class="table" id="tbMonit">
+          <thead>
+            <tr>
+              <th>Indicador</th>
+              <th class="center">Unidade</th>
+              <th class="center">Data Base</th>
+              <th class="center">Valor Atual</th>
+              <th class="center">Índice Alvo</th>
+              <th class="center">Valor Disponível</th>
+              <th>Descrição</th>
+              <th class="center">Enquadramento</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Principais Clientes -->
+      <div class="card col-12">
+        <div class="band">Principais Clientes — Sacados</div>
+        <table class="table" id="tbSacados">
+          <thead>
+            <tr>
+              <th>Nome do sacado</th><th class="center">Unidade</th><th class="center">Valor alocado</th><th class="center">Código NX Boats</th><th>Observação</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="tfoot-note">Observação: Considera valor presente atualizado dos DCs</div>
+      </div>
+
+      <div class="card col-12">
+        <div class="band">Principais Clientes — Risco Sacado</div>
+        <table class="table" id="tbRiscoSac">
+          <thead>
+            <tr>
+              <th>Nome do Cedente</th><th class="center">Unidade</th><th class="center">Valor alocado</th><th>Observação</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="tfoot-note">Observação: Considera valor presente atualizado dos DCs</div>
+      </div>
+
+      <!-- Receita Naval Serviços Financeiros -->
+      <div class="card col-12">
+        <div class="band">Receita Naval Serviços Financeiros</div>
+        <canvas id="chartReceita" height="160"></canvas>
+      </div>
+    </div>
+  </section>
 </div>
 
 <script>
 /* =========================
-   LOGIN / AUTENTICAÇÃO
+   LOGIN / AUTENTICAÇÃO (igual ao seu antigo)
    ========================= */
-// Obs.: proteção 100% front-end. Para dados realmente sensíveis, use backend e
-// restrinja o JSON no servidor.
 const USER_EXPECTED = 'fidcnxboats';
 const PASS_EXPECTED = 'fidcnxb2025';
 const REMEMBER_KEY  = 'nxAuth';
 const REMEMBER_TTL  = 30 * 24 * 60 * 60 * 1000; // 30 dias
 
-function rememberNow(){
-  const payload = { ok:true, ts: Date.now() };
-  localStorage.setItem(REMEMBER_KEY, JSON.stringify(payload));
-}
+function rememberNow(){ localStorage.setItem(REMEMBER_KEY, JSON.stringify({ok:true, ts:Date.now()})); }
 function isRemembered(){
-  try{
-    const raw = localStorage.getItem(REMEMBER_KEY);
-    if(!raw) return false;
-    const obj = JSON.parse(raw);
-    return obj && obj.ok && obj.ts && (Date.now() - obj.ts) < REMEMBER_TTL;
-  }catch(e){ return false; }
+  try{ const o=JSON.parse(localStorage.getItem(REMEMBER_KEY)||'null'); return o && o.ok && (Date.now()-o.ts)<REMEMBER_TTL; }catch(e){ return false; }
 }
-function clearRemember(){ localStorage.removeItem(REMEMBER_KEY); }
-
-function showApp(){
-  document.getElementById('login').style.display='none';
-  document.getElementById('app').style.display='block';
-  bootDashboard(); // carrega dados após autenticar
-}
-
+function showApp(){ document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; bootDashboard(); }
 function handleLogin(){
-  const u = document.getElementById('user').value.trim();
-  const p = document.getElementById('pass').value.trim();
-  const remember = document.getElementById('remember').checked;
-  const err = document.getElementById('loginError');
-
-  if(u === USER_EXPECTED && p === PASS_EXPECTED){
-    err.style.display='none';
-    if(remember) rememberNow();
-    showApp();
-  }else{
-    err.style.display='block';
-  }
+  const u=document.getElementById('user').value.trim();
+  const p=document.getElementById('pass').value.trim();
+  const remember=document.getElementById('remember').checked;
+  const err=document.getElementById('loginError');
+  if(u===USER_EXPECTED && p===PASS_EXPECTED){ err.style.display='none'; if(remember) rememberNow(); showApp(); }
+  else err.style.display='block';
 }
-
 function prepLoginUI(){
   document.getElementById('btnEnter').addEventListener('click', handleLogin);
   document.getElementById('btnClear').addEventListener('click', ()=>{
-    document.getElementById('user').value='';
-    document.getElementById('pass').value='';
-    document.getElementById('loginError').style.display='none';
+    document.getElementById('user').value=''; document.getElementById('pass').value=''; document.getElementById('loginError').style.display='none';
   });
-  document.getElementById('pass').addEventListener('keydown', (e)=>{
-    if(e.key==='Enter') handleLogin();
-  });
-
+  document.getElementById('pass').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
   if(isRemembered()) showApp();
 }
 
 /* =========================
-   DASHBOARD
+   CONSTANTES & HELPERS
    ========================= */
 const DEFAULT_JSON = 'data/carteira_power_bi.json';
 
-const C_TOTAL='#004065', C_CCB='#286DAC', C_DUP='#666666', C_RISCO='#118DFF', C_AZUL_CLARO='#A7CCEB';
+const C_TOTAL      = '#004065';
+const C_CCB        = '#286DAC';
+const C_DUP        = '#666666';
+const C_RISCO      = '#118DFF';
+const C_AZUL_CLARO = '#A7CCEB';
 
 const brlFull = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});
-function fmt1(n){ n=Number(n)||0; const a=Math.abs(n); if(a>=1_000_000) return (n/1_000_000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' Mi'; if(a>=1_000) return (n/1_000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' mil'; return n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+const brlK    = v => (Number(v)/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}); // mil
 const pct1 = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1});
-function toBRDate(str){ if(!str) return '–'; const d=new Date(str); if(!isNaN(d)) return d.toLocaleDateString('pt-BR'); return String(str); }
+function toBRDate(str){ if(!str) return '–'; const d=new Date(str); return isNaN(d)? String(str) : d.toLocaleDateString('pt-BR'); }
 
+/* =========================
+   PARSE DO NOVO JSON (1..11)
+   ========================= */
+function parseNew(rows){
+  // Garante objeto com strings "1".."11"
+  const norm = rows.map(r=>{
+    const out={}; for(let i=1;i<=11;i++) out[i]= r[String(i)] ?? null; return out;
+  });
+
+  // Quebra por letra da coluna 2
+  const sec = { A:[], a:[], B:[], b:[], C:[], c:[], D:[], d:[] };
+  norm.forEach(r=>{
+    const k=r[2]; if(k && sec.hasOwnProperty(k)) sec[k].push(r);
+  });
+
+  // Helpers por cessão
+  const A = {
+    rows: sec['a'],
+    find: name => sec['a'].find(r => (r[4]||'').trim().toLowerCase() === name.trim().toLowerCase())
+  };
+
+  const B = {
+    rows: sec['b']
+  };
+
+  const C = {
+    rows: sec['c']
+  };
+
+  const D = {
+    rows: sec['d']
+  };
+
+  return {A,B,C,D};
+}
+
+/* =========================
+   TABS
+   ========================= */
+function setupTabs(){
+  document.querySelectorAll('.tabbtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      const target=document.querySelector(btn.dataset.target);
+      if(target) target.classList.add('active');
+    });
+  });
+}
+
+/* =========================
+   RENDER PAGE 1 (A)
+   ========================= */
 let chartPrincipal, chartShare, chartReceber;
 
-function byFiltro(rows,nome){ return rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase()); }
-function totalByFiltro(rows,nome){ const arr=byFiltro(rows,nome); return arr.length? (Number(arr[0]["Valor"])||0):0; }
-function firstDateByFiltro(rows,nome,fallback=null){
-  let arr=byFiltro(rows,nome); if((!arr||!arr.length)&&fallback) arr=byFiltro(rows,fallback);
-  const row = arr.find(r=>r['Data Base'])||arr[0]; return row && row['Data Base'] ? String(row['Data Base']) : null;
-}
-function itensOps(rows,nome){
-  const ops=['Duplicatas','CCB','Risco Sacado'];
-  const subset=rows.filter(r => (r["Filtro"]||"").toLowerCase()===nome.toLowerCase());
-  return ops.map(op=>{ const it=subset.find(x => String(x["Overview FIDC NX Boats"]).toLowerCase()===op.toLowerCase()); return {label:op, valor: it? Number(it["Valor"])||0:0}; });
-}
+function renderPage1(sections){
+  const {A} = sections;
 
-function setKpis(rows){
-  document.getElementById("kpiPL").textContent        = brlFull(totalByFiltro(rows,"Patrimônio Líquido (PL)"));
-  document.getElementById("kpiSubInline").textContent = pct1(totalByFiltro(rows,"Índice de Subordinação Total"));
-  document.getElementById("kpiCaixa").textContent     = brlFull(totalByFiltro(rows,"(=) Caixa e Disponibilidades"));
-  document.getElementById("kpiRisco").textContent     = brlFull(totalByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
+  // KPIs
+  const pl = A.find('Patrimônio Líquido (PL)');
+  document.getElementById('kpiPL').textContent = pl? brlFull(pl[7]) : '–';
+  document.getElementById('dbPL').textContent  = 'Data-base: ' + toBRDate(pl && pl[6]);
 
-  setDB('dbPL',firstDateByFiltro(rows,"Patrimônio Líquido (PL)"));
-  setDB('dbCaixa',firstDateByFiltro(rows,"(=) Caixa e Disponibilidades"));
-  setDB('dbRisco',firstDateByFiltro(rows,"(=) Valor Disponível para Risco Sacado"));
+  // Índice de Subordinação (se existir na B, preenche; senão esconde)
+  const subNode = document.getElementById('kpiSubInline');
+  // tenta coletar da seção B (Índice de Subordinação Cotas Sênior)
+  let subVal = null; // se quiser, pode pegar de B depois do parse
+  if(subVal==null){
+    // esconde linha se indisponível
+    subNode.textContent = '–';
+  }
 
-  const principalDate = firstDateByFiltro(rows,"Principal Alocado Total");
-  setDB('dbPrincipal',principalDate);
-  setDB('dbShare',principalDate);
-  setDB('dbReceber',principalDate);
-  setDB('dbPrazo',principalDate);
-}
-function setDB(id,dateStr){ document.getElementById(id).textContent = `Data-base: ${toBRDate(dateStr)}`; }
+  // Caixa
+  const cx = A.find('(=) Caixa e Disponibilidades');
+  document.getElementById('kpiCaixa').textContent = cx? brlFull(cx[7]) : '–';
+  document.getElementById('dbCaixa').textContent  = 'Data-base: ' + toBRDate(cx && cx[6]);
 
-function commonBarOptions(maxVal){
-  return {
-    plugins:{
-      legend:{ display:false },
-      datalabels:{ anchor:'end', align:'end', formatter:(v)=> 'R$ ' + fmt1(v), color:'#000', font:{weight:'700', size:16} },
-      tooltip:{ callbacks:{ label:(c)=> 'R$ ' + fmt1(c.parsed.y) } }
-    },
-    layout:{ padding:{ top:20 } },
-    scales:{ x:{ grid:{display:false} }, y:{ grid:{display:false}, ticks:{ display:false }, beginAtZero:true, suggestedMax:maxVal*1.15 } }
-  };
+  // Tabelas PL e Caixa
+  renderTabelaPL_A(A);
+  renderTabelaCaixa_A(A);
+
+  // Principal Alocado (gráfico + balões com/sem AF)
+  renderPrincipal_A(A);
+  // Share
+  renderShare_A(A);
+  // Valores a Receber
+  renderReceber_A(A);
+  // Prazo Médio
+  renderPrazo_A(A);
 }
 
-function renderPrincipal(rows){
-  const partes = itensOps(rows,"Principal Alocado");
-  const total = partes.reduce((a,b)=>a+b.valor,0);
-  const labels=['Total',...partes.map(x=>x.label)];
-  const data=[total,...partes.map(x=>x.valor)];
+function renderTabelaPL_A(A){
+  const tbody=document.querySelector('#tbPL tbody'); tbody.innerHTML='';
+  const itens=[
+    'Cotas Sêniores','Cotas Mezanino','Cotas Subordinadas'
+  ];
+  itens.forEach(label=>{
+    const r=A.find(label); const v=r? Number(r[7])||0 : 0;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${label}</td><td class="center">${brlFull(v)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderTabelaCaixa_A(A){
+  const tbody=document.querySelector('#tbCaixa tbody'); tbody.innerHTML='';
+  const itens=[
+    {disp:'(+) Liquidez Imediata', key:'(+) Liquidez Imediata'},
+    {disp:'(+) Kanastra', key:'(+) Kanastra'},
+    {disp:'(+) Santander', key:'(+) Santander'}
+  ];
+  itens.forEach(it=>{
+    const r=A.find(it.key); const v=r? Number(r[7])||0 : 0;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${it.disp}</td><td class="center">${brlFull(v)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderPrincipal_A(A){
+  const dup = A.find('Duplicatas');
+  const ccb = A.find('CCB');
+  const ris = A.find('Risco Sacado');
+  const total = A.find('(=) Principal Alocado');
+  const comAF = A.find('com alienação');
+  const semAF = A.find('Sem Alienação');
+
+  const labels=['Total','Duplicatas','CCB','Risco Sacado'];
+  const data=[
+    total? Number(total[7])||0 : 0,
+    dup? Number(dup[7])||0 : 0,
+    ccb? Number(ccb[7])||0 : 0,
+    ris? Number(ris[7])||0 : 0
+  ];
   const colors=[C_TOTAL,C_DUP,C_CCB,C_RISCO];
-  const maxVal=Math.max(...data);
+
+  const dupIndex=labels.indexOf('Duplicatas');
+
   const ctx=document.getElementById('chartPrincipal');
   if(chartPrincipal) chartPrincipal.destroy();
-  chartPrincipal=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:colors}]},options:commonBarOptions(maxVal),plugins:[ChartDataLabels]});
+  chartPrincipal=new Chart(ctx,{
+    type:'bar',
+    data:{ labels, datasets:[
+      { data, backgroundColor: colors },
+      // dataset “pontos” para balões de Com/sem AF posicionados sobre a barra de Duplicatas
+      { type:'scatter',
+        data:[
+          {x: dupIndex, y: data[dupIndex]},
+          {x: dupIndex, y: data[dupIndex]}
+        ],
+        pointRadius:0, // invisível
+      }
+    ]},
+    options:{
+      plugins:{
+        legend:{display:false},
+        datalabels:{
+          // labels do dataset 0 (barras)
+          formatter:(v,ctx)=>{
+            if(ctx.datasetIndex===0) return 'R$ ' + (Number(v)||0).toLocaleString('pt-BR',{maximumFractionDigits:0});
+            // dataset de balões
+            if(ctx.datasetIndex===1){
+              if(ctx.dataIndex===0 && comAF)  return 'Com AF: '  + brlFull(comAF[7]);
+              if(ctx.dataIndex===1 && semAF)  return 'Sem AF: '  + brlFull(semAF[7]);
+              return null;
+            }
+          },
+          align:(ctx)=> ctx.datasetIndex===0 ? 'end' : 'top',
+          anchor:(ctx)=> ctx.datasetIndex===0 ? 'end' : 'end',
+          offset:(ctx)=> ctx.datasetIndex===0 ? 0 : (ctx.dataIndex===0 ? -10 : -40),
+          backgroundColor:(ctx)=> ctx.datasetIndex===1 ? C_AZUL_CLARO : null,
+          color:(ctx)=> ctx.datasetIndex===1 ? '#0f172a' : '#000',
+          borderRadius:(ctx)=> ctx.datasetIndex===1 ? 12 : 0,
+          padding:(ctx)=> ctx.datasetIndex===1 ? {top:4,right:8,bottom:4,left:8} : 0,
+          font:(ctx)=> ctx.datasetIndex===1 ? {weight:'800',size:11} : {weight:'700',size:14},
+          clip:false
+        },
+        tooltip:{ callbacks:{ label:(c)=> 'R$ ' + (Number(c.parsed.y)||0).toLocaleString('pt-BR') } }
+      },
+      layout:{ padding:{top:20,right:20,left:10} },
+      scales:{
+        x:{ grid:{display:false} },
+        y:{ grid:{display:false}, ticks:{display:false}, beginAtZero:true, suggestedMax: Math.max(...data)*1.15 }
+      }
+    },
+    plugins:[ChartDataLabels]
+  });
+
+  document.getElementById('dbPrincipal').textContent = 'Data-base: ' + toBRDate(total && total[6]);
 }
-function renderShare(rows){
-  const partes=itensOps(rows,"Share da Carteira");
+
+function renderShare_A(A){
+  const ccb=A.find('CCB'); const dup=A.find('Duplicatas'); const ris=A.find('Risco Sacado');
   const ctx=document.getElementById('chartShare');
   if(chartShare) chartShare.destroy();
-  chartShare=new Chart(ctx,{type:'doughnut',data:{labels:partes.map(x=>x.label),datasets:[{data:partes.map(x=>x.valor),backgroundColor:[C_DUP,C_CCB,C_RISCO]}]},options:{plugins:{legend:{position:'bottom'},datalabels:{formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);const p=t?(v/t):0;return pct1(p);},color:'#fff',font:{weight:'700',size:16}},tooltip:{callbacks:{label:(c)=>`${c.label}: ${pct1(c.parsed)}`}}}},plugins:[ChartDataLabels]});
+  chartShare=new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:['Duplicatas','CCB','Risco Sacado'],
+      datasets:[{ data:[dup?dup[7]:0, ccb?ccb[7]:0, ris?ris[7]:0], backgroundColor:[C_DUP,C_CCB,C_RISCO] }]
+    },
+    options:{
+      plugins:{
+        legend:{ position:'bottom' },
+        datalabels:{
+          formatter:(v,ctx)=>{
+            const tot=ctx.dataset.data.reduce((a,b)=>a+Number(b||0),0);
+            return tot? pct1(v/tot) : '';
+          },
+          color:'#fff', font:{weight:'700', size:16}
+        }
+      }
+    },
+    plugins:[ChartDataLabels]
+  });
+  // data-base acompanhar “(=) Principal Alocado”
+  const total=A.find('(=) Principal Alocado');
+  document.getElementById('dbShare').textContent = 'Data-base: ' + toBRDate(total && total[6]);
 }
-function renderReceber(rows){
-  const partes=itensOps(rows,"Valores a Receber");
-  const total=partes.reduce((a,b)=>a+b.valor,0);
-  const labels=['Total',...partes.map(x=>x.label)];
-  const data=[total,...partes.map(x=>x.valor)];
-  const colors=[C_TOTAL,C_DUP,C_CCB,C_RISCO];
-  const maxVal=Math.max(...data);
+
+function renderReceber_A(A){
+  const tot=A.find('(=) Valores a Receber');
+  const ccb=A.find('CCB'); // atenção: existem várias “CCB”; pegaremos a que aparece depois da linha "(=) Valores a Receber"
+  // Para simplificar: use os 3 específicos após a linha de "(=) Valores a Receber"
+  const idx = A.rows.indexOf(tot);
+  let ccbRec, dupRec, risRec;
+  if(idx>=0){
+    ccbRec = A.rows[idx+1] && (A.rows[idx+1][4]||'').trim().toLowerCase()==='ccb' ? A.rows[idx+1] : null;
+    dupRec = A.rows[idx+2] && (A.rows[idx+2][4]||'').trim().toLowerCase()==='duplicatas' ? A.rows[idx+2] : null;
+    risRec = A.rows[idx+3] && (A.rows[idx+3][4]||'').trim().toLowerCase()==='risco sacado' ? A.rows[idx+3] : null;
+  }
+  const labels=['Total','Duplicatas','CCB','Risco Sacado'];
+  const data=[
+    tot? Number(tot[7])||0 : 0,
+    dupRec? Number(dupRec[7])||0 : 0,
+    ccbRec? Number(ccbRec[7])||0 : 0,
+    risRec? Number(risRec[7])||0 : 0
+  ];
   const ctx=document.getElementById('chartReceber');
   if(chartReceber) chartReceber.destroy();
-  chartReceber=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:colors}]},options:commonBarOptions(maxVal),plugins:[ChartDataLabels]});
+  chartReceber=new Chart(ctx,{
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor:[C_TOTAL,C_DUP,C_CCB,C_RISCO] }] },
+    options:{
+      plugins:{
+        legend:{display:false},
+        datalabels:{ anchor:'end', align:'end', formatter:(v)=> 'R$ ' + (Number(v)||0).toLocaleString('pt-BR'), color:'#000', font:{weight:'700',size:14} },
+        tooltip:{ callbacks:{ label:(c)=> 'R$ ' + (Number(c.parsed.y)||0).toLocaleString('pt-BR') } }
+      },
+      layout:{ padding:{ top:20 } },
+      scales:{ x:{grid:{display:false}}, y:{grid:{display:false}, ticks:{display:false}, beginAtZero:true, suggestedMax: Math.max(...data)*1.15 } }
+    },
+    plugins:[ChartDataLabels]
+  });
+  document.getElementById('dbReceber').textContent='Data-base: ' + toBRDate(tot && tot[6]);
 }
 
-function renderPrazo(rows){
-  const totalPrazoRows = byFiltro(rows,"Prazo Médio total");
-  const totalPrazo = totalPrazoRows.length ? Number(totalPrazoRows[0]["Valor"])||0 : 0;
-  const linhas=[{label:'(=) Prazo Médio',valor:totalPrazo},...itensOps(rows,"Prazo Médio").filter(x=>x.label!=='(=) Prazo Médio')];
-  const tb=document.getElementById("tbodyPrazo"); tb.innerHTML="";
+function renderPrazo_A(A){
+  // Total + CCB + Duplicatas + Risco Sacado (em dias)
+  const total = A.find('(=) Prazo Médio ');
+  const ccb   = A.find('CCB');
+  const dup   = A.find('Duplicatas');
+  const ris   = A.find('Risco Sacado');
+
+  const linhas=[
+    {label:'(=) Prazo Médio', valor: total? Number(total[7])||0 : 0},
+    {label:'Duplicatas', valor: dup? Number(dup[7])||0 : 0},
+    {label:'CCB', valor: ccb? Number(ccb[7])||0 : 0},
+    {label:'Risco Sacado', valor: ris? Number(ris[7])||0 : 0},
+  ];
+  const tb=document.getElementById('tbodyPrazo'); tb.innerHTML='';
   linhas.forEach(r=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r.label}</td><td class="center">${(Number(r.valor)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
+    tr.innerHTML=`<td>${r.label}</td><td class="center">${(Number(r.valor)||0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>`;
     tb.appendChild(tr);
   });
+  document.getElementById('dbPrazo').textContent='Data-base: ' + toBRDate(total && total[6]);
 }
 
-function renderTabelaPL(rows){
-  const labels=[{disp:'Cotas Sêniores',keys:['Cotas Sêniors','Cotas Seniores','Cotas Sêniores']},{disp:'Cotas Subordinadas',keys:['Cotas Subordinadas']},{disp:'Cotas Mezanino',keys:['Cotas Mezanino','Cotas MezAnino']}];
-  const tbody=document.querySelector('#tbPL tbody'); tbody.innerHTML='';
-  labels.forEach(l=>{
-    const row=rows.find(r=> l.keys.map(k=>k.toLowerCase()).includes(String(r['Overview FIDC NX Boats']||'').toLowerCase()) && (!r['Unid'] || String(r['Unid']).toLowerCase().includes('r$')) );
-    const val=row ? Number(row['Valor'])||0 : 0;
+/* =========================
+   RENDER PAGE 2 (B, C, D)
+   ========================= */
+function renderPage2(sections){
+  renderMonit_B(sections.B);
+  renderClientes_C(sections.C);
+  renderReceita_D(sections.D);
+}
+
+function renderMonit_B(B){
+  const tbody=document.querySelector('#tbMonit tbody'); tbody.innerHTML='';
+
+  const rows=B.rows||[];
+
+  // Percorre e escreve blocos com linhas de título (Subordinação, Alocação, Por Operação, Por Sacado, Inadimplência)
+  const isTitle = v => ['Subordinação','Alocação','Por Operação','Por Sacado','Inadimplência'].includes((v||'').trim());
+
+  rows.forEach(r=>{
+    const nome=(r[4]||'').trim();
+    if(!nome) return;
+
+    if(isTitle(nome)){
+      const tr=document.createElement('tr');
+      tr.className='subsec';
+      tr.innerHTML=`<td colspan="8">${nome}</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    // Linhas de indicador
+    const unidade = r[5]||'';
+    const dataB   = r[6] ? toBRDate(r[6]) : '';
+    const valAt   = r[7]!=null ? r[5]==='%' ? pct1(r[7]) : brlFull(r[7]) : '';
+    const alvo    = r[8]!=null ? (r[5]==='%' ? pct1(r[8]) : brlFull(r[8])) : '';
+    const disp    = r[9]!=null ? brlFull(r[9]) : '';
+    const desc    = r[10]||'';
+    const enqua   = (r[11]||'').toString().trim().toUpperCase();
+
+    const tag = enqua==='DESENQUADRADO'
+      ? `<span class="tag-no">DESENQUADRADO</span>`
+      : (enqua==='OK' ? `<span class="tag-ok">OK</span>` : '');
+
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${l.disp}</td><td class="center">${brlFull(val)}</td>`;
+    tr.innerHTML = `
+      <td>${nome}</td>
+      <td class="center">${unidade||''}</td>
+      <td class="center">${dataB}</td>
+      <td class="center">${valAt}</td>
+      <td class="center">${alvo}</td>
+      <td class="center">${disp}</td>
+      <td>${desc}</td>
+      <td class="center">${tag}</td>
+    `;
     tbody.appendChild(tr);
   });
 }
-function renderTabelaCaixa(rows){
-  const map=[{disp:'(+) Liquidez Imediata',keys:['(+) Aplicações Liquidez Imediata','(+) Liquidez Imediata','Liquidez Imediata']},{disp:'(+) Kanastra',keys:['(+) Conta Kanastra (Cobrança)','(+) Kanastra']},{disp:'(+) Santander',keys:['(+) Conta Santander (Zeragem)','(+) Santander']}];
-  const tbody=document.querySelector('#tbCaixa tbody'); tbody.innerHTML='';
-  map.forEach(l=>{
-    const row=rows.find(r=> l.keys.map(k=>k.toLowerCase()).includes(String(r['Overview FIDC NX Boats']||'').toLowerCase()) );
-    const val=row ? Number(row['Valor'])||0 : 0;
+
+function renderClientes_C(C){
+  // Sacados
+  const sacHeaderIdx = C.rows.findIndex(r => (r[4]||'').trim().toLowerCase()==='sacados');
+  const riscoHeaderIdx = C.rows.findIndex(r => (r[4]||'').trim().toLowerCase()==='risco sacado');
+
+  const sacRows = [];
+  for(let i=sacHeaderIdx+1; i<C.rows.length; i++){
+    const r=C.rows[i]; const nome=(r[4]||'').trim();
+    if(!nome || (r[4] && ['risco sacado'].includes(nome.toLowerCase()))) break;
+    if(r[5]==null && r[6]==null && r[7]==null) continue;
+    sacRows.push(r);
+  }
+
+  const riscoRows = [];
+  if(riscoHeaderIdx>=0){
+    for(let i=riscoHeaderIdx+1; i<C.rows.length; i++){
+      const r=C.rows[i]; const nome=(r[4]||'').trim();
+      if(!nome) break;
+      riscoRows.push(r);
+    }
+  }
+
+  const tbS=document.querySelector('#tbSacados tbody'); tbS.innerHTML='';
+  sacRows.forEach(r=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${l.disp}</td><td class="center">${brlFull(val)}</td>`;
-    tbody.appendChild(tr);
+    tr.innerHTML=`
+      <td>${(r[4]||'').trim()}</td>
+      <td class="center">${r[6]||''}</td>
+      <td class="center">${brlFull(r[5])}</td>
+      <td class="center">${r[7]||''}</td>
+      <td>${r[8]||''}</td>
+    `;
+    tbS.appendChild(tr);
+  });
+
+  const tbR=document.querySelector('#tbRiscoSac tbody'); tbR.innerHTML='';
+  riscoRows.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${(r[4]||'').trim()}</td>
+      <td class="center">${r[6]||''}</td>
+      <td class="center">${brlFull(r[5])}</td>
+      <td>${r[8]||''}</td>
+    `;
+    tbR.appendChild(tr);
   });
 }
 
-function normalizeRows(rows){
-  return rows.map(r=>({
-    "Overview FIDC NX Boats": r["Overview FIDC NX Boats"] ?? r["Overview"] ?? r["Descrição"] ?? r["Descricao"] ?? r["desc"] ?? null,
-    "Unid": r["Unid"] ?? r["Unidade"] ?? null,
-    "Fonte": r["Fonte"] ?? null,
-    "Data Base": r["Data Base"] ?? r["DataBase"] ?? r["Data"] ?? null,
-    "Valor": (typeof r["Valor"]==="string") ? Number(r["Valor"].replace(/\./g,'').replace(',','.')) : (r["Valor"]??0),
-    "Filtro": r["Filtro"] ?? r["Categoria"] ?? null
-  }));
+let chartReceita;
+function renderReceita_D(D){
+  const rows = (D.rows||[]).filter(r => r[4] && r[7]!=null); // mês/ano + valor
+  const labels = rows.map(r => (r[4]||'').trim());
+  const data   = rows.map(r => Number(r[7])||0);
+
+  const ctx=document.getElementById('chartReceita');
+  if(chartReceita) chartReceita.destroy();
+  chartReceita = new Chart(ctx,{
+    type:'bar',
+    data:{ labels, datasets:[{ data: data.map(v=>v/1000), backgroundColor: C_AZUL_CLARO, borderColor: C_AZUL_CLARO }] },
+    options:{
+      plugins:{
+        legend:{display:false},
+        datalabels:{
+          formatter:(v)=> v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' mil',
+          anchor:'end', align:'end', color:'#000', font:{weight:'800',size:12}
+        },
+        tooltip:{ callbacks:{ label:(c)=> 'R$ ' + (Number(c.raw)*1000).toLocaleString('pt-BR') } }
+      },
+      scales:{
+        x:{ grid:{display:false} },
+        y:{ grid:{display:false}, ticks:{ display:false }, beginAtZero:true, suggestedMax: Math.max(...data)/1000 * 1.25 }
+      },
+      layout:{ padding:{ top:20 } }
+    },
+    plugins:[ChartDataLabels]
+  });
 }
 
+/* =========================
+   LOAD
+   ========================= */
 function bootDashboard(){
+  setupTabs();
+
   const bust=`?v=${Date.now()}`;
   fetch(DEFAULT_JSON + bust)
     .then(r=>{ if(!r.ok) throw new Error('Falha ao ler JSON'); return r.json(); })
     .then(raw=>{
-      const rows=normalizeRows(raw);
-      setKpis(rows);
-      renderPrincipal(rows);
-      renderShare(rows);
-      renderReceber(rows);
-      renderPrazo(rows);
-      renderTabelaPL(rows);
-      renderTabelaCaixa(rows);
+      const sections=parseNew(raw);
+      renderPage1(sections);
+      renderPage2(sections);
     })
-    .catch(err=>alert('Erro ao carregar JSON: ' + err.message));
+    .catch(err=> alert('Erro ao carregar JSON: ' + err.message));
 }
 
 Chart.register(ChartDataLabels);
