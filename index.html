@@ -11,29 +11,21 @@
 
 <style>
   :root{
-    --azul-muito-escuro:#004065; /* HEX1 */
-    --azul-escuro:#286DAC;       /* HEX2 */
-    --azul-claro:#A7CCEB;        /* HEX3 */
-    --azul-destaque:#118DFF;     /* HEX4 */
-    --cinza-mto-escuro:#666666;  /* HEX5 */
+    --azul-muito-escuro:#004065;
+    --azul-escuro:#286DAC;
+    --azul-claro:#A7CCEB;
+    --azul-destaque:#118DFF;
+    --cinza-mto-escuro:#666666;
+    --cinza-claro:#e5e7eb;
     --verde-ok:#16a34a;
     --vermelho-no:#dc2626;
-    --cinza-claro:#e5e7eb;
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#eef4fb;color:#0f172a}
-  header{
-    background:var(--azul-muito-escuro);
-    color:#fff;
-    padding:12px 18px;
-    font-weight:900;
-    font-size:28px;
-    text-align:center;
-    letter-spacing:.3px
-  }
+  header{background:var(--azul-muito-escuro);color:#fff;padding:12px 18px;font-weight:900;font-size:28px;text-align:center;letter-spacing:.3px}
   .wrap{max-width:1200px;margin:18px auto;padding:0 12px}
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
-  .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06); position:relative;}
+  .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);position:relative}
   .band{background:var(--azul-escuro);color:#fff;border-radius:10px;padding:8px 10px;font-weight:900;margin:-6px -6px 12px;letter-spacing:.3px}
   .kpi-valor{font-size:32px;font-weight:900;margin:6px 0;color:#000}
   .kpi-valor.center{text-align:center}
@@ -74,24 +66,21 @@
   .page{display:none}
   .page.active{display:block}
 
-  /* ========= TABELAS ESPECIAIS (Página 2) ========= */
-  #tbMonit thead th{background:var(--cinza-mto-escuro) !important; color:#fff} /* cabeçalho cinza escuro */
+  /* ========= PÁGINA 2: estilos da planilha ========= */
+  #tbMonit thead th{background:var(--cinza-mto-escuro)!important;color:#fff}
   .subsec{background:var(--azul-claro);font-weight:900;color:#0f172a}
   .subsec-gray{background:var(--cinza-claro);font-weight:900;color:#0f172a}
   .tag-ok{background:rgba(22,163,74,.12);color:var(--verde-ok);padding:2px 8px;border-radius:999px;font-weight:800;display:inline-block}
   .tag-no{background:rgba(220,38,38,.12);color:var(--vermelho-no);padding:2px 8px;border-radius:999px;font-weight:800;display:inline-block}
   .highlight-row{font-weight:900;border-bottom:2px solid #334155}
 
-  /* ========= MINI-TABELA COM/SEM AF (canto superior direito do card) ========= */
-  .mini-af{
-    position:absolute; top:8px; right:10px;
-    background:#fff; border:1px solid #e5e7eb; border-radius:10px;
-    box-shadow:0 4px 16px rgba(0,0,0,.06); overflow:hidden; min-width:240px;
-  }
-  .mini-af table{width:100%; border-collapse:collapse; font-size:13px}
-  .mini-af th{background:#f4f8fd; color:#0f172a; padding:6px 8px; text-align:center; border-bottom:1px solid #e5e7eb}
-  .mini-af td{padding:6px 8px; border-bottom:1px solid #f1f5f9}
-  .mini-af td:nth-child(2){text-align:right; font-weight:900}
+  /* ========= MINI-TABELA COM/SEM AF (agora abaixo do título) ========= */
+  .mini-afbar{display:flex;justify-content:flex-end;margin:-4px 0 8px}
+  .mini-af{background:#fff;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.06);overflow:hidden;min-width:260px}
+  .mini-af table{width:100%;border-collapse:collapse;font-size:13px}
+  .mini-af th{background:#f4f8fd;color:#0f172a;padding:6px 8px;text-align:center;border-bottom:1px solid #e5e7eb}
+  .mini-af td{padding:6px 8px;border-bottom:1px solid #f1f5f9}
+  .mini-af td:nth-child(2){text-align:right;font-weight:900}
 </style>
 </head>
 <body>
@@ -133,7 +122,7 @@
     <button class="tabbtn" data-target="#page2">Página 2 — Monitoramento, Clientes e Receita</button>
   </div>
 
-  <!-- ===== PAGE 1 (Cessão A) ===== -->
+  <!-- ===== PAGE 1 ===== -->
   <section id="page1" class="page active">
     <div class="wrap">
       <div class="grid">
@@ -142,6 +131,7 @@
         <div class="card col-6">
           <div class="band">Patrimônio Líquido (PL)</div>
           <div id="kpiPL" class="kpi-valor">–</div>
+
           <div class="sub-title">Índice de Subordinação</div>
           <div id="kpiSubInline" class="kpi-valor">–</div>
 
@@ -166,19 +156,28 @@
           <div class="dbase" id="dbCaixa">Data-base: –</div>
         </div>
 
+        <!-- NOVO: Valor Disponível para Risco Sacado (da seção B) -->
+        <div class="card col-6">
+          <div class="band">Valor Disponível para Risco Sacado</div>
+          <div id="kpiRisco" class="kpi-valor center">–</div>
+          <div class="dbase" id="dbRisco">Data-base: –</div>
+        </div>
+
         <!-- Principal Alocado (barras) + Share (rosca) -->
         <div class="card col-8">
           <div class="band">Principal Alocado por Operação</div>
 
-          <!-- mini-tabela COM/SEM AF -->
-          <div id="miniAF" class="mini-af" aria-label="Detalhe Duplicatas AF">
-            <table>
-              <thead><tr><th colspan="2">Duplicatas — detalhamento</th></tr></thead>
-              <tbody>
-                <tr><td>Duplicatas sem AF</td><td id="valSemAF">–</td></tr>
-                <tr><td>Duplicatas com AF</td><td id="valComAF">–</td></tr>
-              </tbody>
-            </table>
+          <!-- mini-tabela logo abaixo do título -->
+          <div class="mini-afbar">
+            <div id="miniAF" class="mini-af" aria-label="Detalhe Duplicatas AF">
+              <table>
+                <thead><tr><th colspan="2">Duplicatas — detalhamento</th></tr></thead>
+                <tbody>
+                  <tr><td>Duplicatas sem AF</td><td id="valSemAF">–</td></tr>
+                  <tr><td>Duplicatas com AF</td><td id="valComAF">–</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <canvas id="chartPrincipal" height="160"></canvas>
@@ -211,7 +210,7 @@
     </div>
   </section>
 
-  <!-- ===== PAGE 2 (B, C, D) ===== -->
+  <!-- ===== PAGE 2 ===== -->
   <section id="page2" class="page">
     <div class="wrap grid">
       <!-- Índices de Monitoramento -->
@@ -234,7 +233,7 @@
         </table>
       </div>
 
-      <!-- Principais Clientes -->
+      <!-- Principais Clientes — Sacados -->
       <div class="card col-12">
         <div class="band">Principais Clientes — Sacados</div>
         <table class="table" id="tbSacados">
@@ -247,6 +246,7 @@
         </table>
       </div>
 
+      <!-- Principais Clientes — Risco Sacado -->
       <div class="card col-12">
         <div class="band">Principais Clientes — Risco Sacado</div>
         <table class="table" id="tbRiscoSac">
@@ -275,7 +275,7 @@
 const USER_EXPECTED = 'fidcnxboats';
 const PASS_EXPECTED = 'fidcnxb2025';
 const REMEMBER_KEY  = 'nxAuth';
-const REMEMBER_TTL  = 30 * 24 * 60 * 60 * 1000; // 30 dias
+const REMEMBER_TTL  = 30 * 24 * 60 * 60 * 1000;
 
 function rememberNow(){ localStorage.setItem(REMEMBER_KEY, JSON.stringify({ok:true, ts:Date.now()})); }
 function isRemembered(){ try{ const o=JSON.parse(localStorage.getItem(REMEMBER_KEY)||'null'); return o && o.ok && (Date.now()-o.ts)<REMEMBER_TTL; }catch(e){ return false; } }
@@ -298,12 +298,7 @@ function prepLoginUI(){
    CONSTANTES & HELPERS
    ========================= */
 const DEFAULT_JSON = 'data/carteira_power_bi.json';
-
-const C_TOTAL      = '#004065';
-const C_CCB        = '#286DAC';
-const C_DUP        = '#666666';
-const C_RISCO      = '#118DFF';
-const C_AZUL_CLARO = '#A7CCEB';
+const C_TOTAL='#004065', C_CCB='#286DAC', C_DUP='#666666', C_RISCO='#118DFF', C_AZUL_CLARO='#A7CCEB';
 
 const brlFull = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});
 const pct1 = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1});
@@ -318,7 +313,7 @@ function parseNew(rows){
   norm.forEach(r=>{ const k=r[2]; if(k && sec.hasOwnProperty(k)) sec[k].push(r); });
   return {
     A:{ rows:sec['a'], find:name=>sec['a'].find(r => (r[4]||'').trim().toLowerCase()===name.trim().toLowerCase()) },
-    B:{ rows:sec['b'] },
+    B:{ rows:sec['b'], find:name=>sec['b'].find(r => (r[4]||'').trim().toLowerCase()===name.trim().toLowerCase()) },
     C:{ rows:sec['c'] },
     D:{ rows:sec['d'] }
   };
@@ -340,25 +335,50 @@ function setupTabs(){
 }
 
 /* =========================
-   PÁGINA 1 (A)
+   OPÇÕES DE BARRA (usar igual nos dois gráficos)
+   ========================= */
+function commonBarOptions(maxVal){
+  return {
+    plugins:{
+      legend:{ display:false },
+      datalabels:{ anchor:'end', align:'end', formatter:(v)=> 'R$ ' + (Number(v)||0).toLocaleString('pt-BR'), color:'#000', font:{weight:'700', size:14} },
+      tooltip:{ callbacks:{ label:(c)=> 'R$ ' + (Number(c.parsed.y)||0).toLocaleString('pt-BR') } }
+    },
+    layout:{ padding:{ top:20 } },
+    scales:{
+      x:{ grid:{display:false} },
+      y:{ grid:{display:false}, ticks:{ display:false }, beginAtZero:true, suggestedMax:maxVal*1.15 }
+    }
+  };
+}
+
+/* =========================
+   PÁGINA 1 (A + referências de B)
    ========================= */
 let chartPrincipal, chartShare, chartReceber;
 
 function renderPage1(sections){
-  const {A} = sections;
+  const {A,B} = sections;
 
-  // KPIs
+  // KPIs PL
   const pl = A.find('Patrimônio Líquido (PL)');
   document.getElementById('kpiPL').textContent = pl? brlFull(pl[7]) : '–';
   document.getElementById('dbPL').textContent  = 'Data-base: ' + toBRDate(pl && pl[6]);
 
-  const cx = A.find('(=) Caixa e Disponibilidades');
-  document.getElementById('kpiCaixa').textContent = cx? brlFull(cx[7]) : '–';
-  document.getElementById('dbCaixa').textContent  = 'Data-base: ' + toBRDate(cx && cx[6]);
+  // Índice de Subordinação (vem de B → Cotas Sênior)
+  const idxSenior = B.find('Índice de Subordinação Cotas Sênior') || B.find('Índice de Subordinação Cotas Sênior ');
+  document.getElementById('kpiSubInline').textContent = idxSenior? pct1(idxSenior[7]) : '–';
+
+  // Novo card: Valor Disponível p/ Risco Sacado (B → % de PL Alocado em Risco Sacado, col 9)
+  const riscoDisp = B.find('% de PL Alocado em Risco Sacado');
+  document.getElementById('kpiRisco').textContent = riscoDisp? brlFull(riscoDisp[9]) : '–';
+  // usa a mesma data do (=) Principal Alocado como referência
+  const principalDate = A.find('(=) Principal Alocado');
+  document.getElementById('dbRisco').textContent = 'Data-base: ' + toBRDate(principalDate && principalDate[6]);
 
   renderTabelaPL_A(A);
   renderTabelaCaixa_A(A);
-  renderPrincipal_A(A);
+  renderPrincipal_A(A);     // agora com mesma formatação do “Valores a Receber”
   renderShare_A(A);
   renderReceber_A(A);
   renderPrazo_A(A);
@@ -395,7 +415,7 @@ function renderPrincipal_A(A){
   const comAF = A.find('com alienação');
   const semAF = A.find('Sem Alienação');
 
-  // preenche mini-tabela canto direito
+  // mini-tabela
   document.getElementById('valSemAF').textContent = semAF? brlFull(semAF[7]) : '–';
   document.getElementById('valComAF').textContent = comAF? brlFull(comAF[7]) : '–';
 
@@ -410,25 +430,10 @@ function renderPrincipal_A(A){
 
   const ctx=document.getElementById('chartPrincipal');
   if(chartPrincipal) chartPrincipal.destroy();
-
   chartPrincipal=new Chart(ctx,{
     type:'bar',
     data:{ labels, datasets:[{ data, backgroundColor: colors }] },
-    options:{
-      plugins:{
-        legend:{display:false},
-        datalabels:{
-          formatter:(v)=> 'R$ ' + (Number(v)||0).toLocaleString('pt-BR'),
-          align:'end', anchor:'end', color:'#000', font:{weight:'700', size:14}
-        },
-        tooltip:{ callbacks:{ label:(c)=> 'R$ ' + (Number(c.parsed.y)||0).toLocaleString('pt-BR') } }
-      },
-      layout:{ padding:{ top:20, right:260 } }, /* espaço para a mini-tabela */
-      scales:{
-        x:{ grid:{display:false} },
-        y:{ grid:{display:false}, ticks:{display:false}, beginAtZero:true, suggestedMax: Math.max(...data)*1.2 }
-      }
-    },
+    options: commonBarOptions(Math.max(...data)),
     plugins:[ChartDataLabels]
   });
 
@@ -461,7 +466,12 @@ function renderReceber_A(A){
   const data=[ tot?Number(tot[7])||0:0, dupRec?Number(dupRec[7])||0:0, ccbRec?Number(ccbRec[7])||0:0, risRec?Number(risRec[7])||0:0 ];
   const ctx=document.getElementById('chartReceber');
   if(chartReceber) chartReceber.destroy();
-  chartReceber=new Chart(ctx,{ type:'bar', data:{labels,datasets:[{data,backgroundColor:[C_TOTAL,C_DUP,C_CCB,C_RISCO]}]}, options:{ plugins:{ legend:{display:false}, datalabels:{anchor:'end',align:'end',formatter:(v)=>'R$ '+(Number(v)||0).toLocaleString('pt-BR'),color:'#000',font:{weight:'700',size:14}}, tooltip:{callbacks:{label:(c)=>'R$ '+(Number(c.parsed.y)||0).toLocaleString('pt-BR')}} }, layout:{padding:{top:20}}, scales:{x:{grid:{display:false}}, y:{grid:{display:false},ticks:{display:false},beginAtZero:true,suggestedMax:Math.max(...data)*1.15}} }, plugins:[ChartDataLabels]});
+  chartReceber=new Chart(ctx,{
+    type:'bar',
+    data:{labels,datasets:[{data,backgroundColor:[C_TOTAL,C_DUP,C_CCB,C_RISCO]}]},
+    options: commonBarOptions(Math.max(...data)),
+    plugins:[ChartDataLabels]
+  });
   document.getElementById('dbReceber').textContent='Data-base: ' + toBRDate(tot && tot[6]);
 }
 function renderPrazo_A(A){
