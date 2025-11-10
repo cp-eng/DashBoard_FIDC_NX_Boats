@@ -33,7 +33,7 @@
   }
   .wrap{max-width:1200px;margin:18px auto;padding:0 12px}
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
-  .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06); position:relative;}
   .band{background:var(--azul-escuro);color:#fff;border-radius:10px;padding:8px 10px;font-weight:900;margin:-6px -6px 12px;letter-spacing:.3px}
   .kpi-valor{font-size:32px;font-weight:900;margin:6px 0;color:#000}
   .kpi-valor.center{text-align:center}
@@ -75,13 +75,23 @@
   .page.active{display:block}
 
   /* ========= TABELAS ESPECIAIS (Página 2) ========= */
-  /* Cabeçalho cinza-escuro */
-  #tbMonit thead th{background:var(--cinza-mto-escuro) !important; color:#fff}
+  #tbMonit thead th{background:var(--cinza-mto-escuro) !important; color:#fff} /* cabeçalho cinza escuro */
   .subsec{background:var(--azul-claro);font-weight:900;color:#0f172a}
   .subsec-gray{background:var(--cinza-claro);font-weight:900;color:#0f172a}
   .tag-ok{background:rgba(22,163,74,.12);color:var(--verde-ok);padding:2px 8px;border-radius:999px;font-weight:800;display:inline-block}
   .tag-no{background:rgba(220,38,38,.12);color:var(--vermelho-no);padding:2px 8px;border-radius:999px;font-weight:800;display:inline-block}
   .highlight-row{font-weight:900;border-bottom:2px solid #334155}
+
+  /* ========= MINI-TABELA COM/SEM AF (canto superior direito do card) ========= */
+  .mini-af{
+    position:absolute; top:8px; right:10px;
+    background:#fff; border:1px solid #e5e7eb; border-radius:10px;
+    box-shadow:0 4px 16px rgba(0,0,0,.06); overflow:hidden; min-width:240px;
+  }
+  .mini-af table{width:100%; border-collapse:collapse; font-size:13px}
+  .mini-af th{background:#f4f8fd; color:#0f172a; padding:6px 8px; text-align:center; border-bottom:1px solid #e5e7eb}
+  .mini-af td{padding:6px 8px; border-bottom:1px solid #f1f5f9}
+  .mini-af td:nth-child(2){text-align:right; font-weight:900}
 </style>
 </head>
 <body>
@@ -159,10 +169,23 @@
         <!-- Principal Alocado (barras) + Share (rosca) -->
         <div class="card col-8">
           <div class="band">Principal Alocado por Operação</div>
+
+          <!-- mini-tabela COM/SEM AF -->
+          <div id="miniAF" class="mini-af" aria-label="Detalhe Duplicatas AF">
+            <table>
+              <thead><tr><th colspan="2">Duplicatas — detalhamento</th></tr></thead>
+              <tbody>
+                <tr><td>Duplicatas sem AF</td><td id="valSemAF">–</td></tr>
+                <tr><td>Duplicatas com AF</td><td id="valComAF">–</td></tr>
+              </tbody>
+            </table>
+          </div>
+
           <canvas id="chartPrincipal" height="160"></canvas>
           <div class="dbase" id="dbPrincipal">Data-base: –</div>
           <div class="obs">Considera valor presente atualizado dos DCs</div>
         </div>
+
         <div class="card col-4">
           <div class="band">Share da Carteira</div>
           <canvas id="chartShare" height="160"></canvas>
@@ -281,10 +304,8 @@ const C_CCB        = '#286DAC';
 const C_DUP        = '#666666';
 const C_RISCO      = '#118DFF';
 const C_AZUL_CLARO = '#A7CCEB';
-const C_CINZA_ESCURO = '#666666';
 
 const brlFull = v => (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2});
-const brlK    = v => (Number(v)/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
 const pct1 = v => (Number(v)||0).toLocaleString('pt-BR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1});
 function toBRDate(str){ if(!str) return '–'; const d=new Date(str); return isNaN(d)? String(str) : d.toLocaleDateString('pt-BR'); }
 
@@ -322,41 +343,6 @@ function setupTabs(){
    PÁGINA 1 (A)
    ========================= */
 let chartPrincipal, chartShare, chartReceber;
-
-const dupArrowsPlugin = {
-  id:'dupArrows',
-  afterDatasetsDraw(chart, args, pluginOptions){
-    const refs = chart.$dupArrows;
-    if(!refs) return;
-    const ctx = chart.ctx;
-    ctx.save();
-    ctx.setLineDash([4,3]);
-    ctx.strokeStyle = C_CINZA_ESCURO;
-    ctx.lineWidth = 1.5;
-
-    const from = refs.from;
-    refs.targets.forEach(t=>{
-      // linha
-      ctx.beginPath();
-      ctx.moveTo(from.x, from.y);
-      ctx.lineTo(t.x, t.y);
-      ctx.stroke();
-
-      // pequena seta
-      const ang = Math.atan2(t.y-from.y, t.x-from.x);
-      const ah = 6; // tamanho da seta
-      ctx.beginPath();
-      ctx.moveTo(t.x, t.y);
-      ctx.lineTo(t.x - ah*Math.cos(ang - Math.PI/6), t.y - ah*Math.sin(ang - Math.PI/6));
-      ctx.lineTo(t.x - ah*Math.cos(ang + Math.PI/6), t.y - ah*Math.sin(ang + Math.PI/6));
-      ctx.closePath();
-      ctx.fillStyle = C_CINZA_ESCURO;
-      ctx.fill();
-    });
-
-    ctx.restore();
-  }
-};
 
 function renderPage1(sections){
   const {A} = sections;
@@ -409,6 +395,10 @@ function renderPrincipal_A(A){
   const comAF = A.find('com alienação');
   const semAF = A.find('Sem Alienação');
 
+  // preenche mini-tabela canto direito
+  document.getElementById('valSemAF').textContent = semAF? brlFull(semAF[7]) : '–';
+  document.getElementById('valComAF').textContent = comAF? brlFull(comAF[7]) : '–';
+
   const labels=['Total','Duplicatas','CCB','Risco Sacado'];
   const data=[
     total? Number(total[7])||0 : 0,
@@ -418,70 +408,29 @@ function renderPrincipal_A(A){
   ];
   const colors=[C_TOTAL,C_DUP,C_CCB,C_RISCO];
 
-  const dupIndex=labels.indexOf('Duplicatas');
   const ctx=document.getElementById('chartPrincipal');
   if(chartPrincipal) chartPrincipal.destroy();
 
   chartPrincipal=new Chart(ctx,{
     type:'bar',
-    data:{ labels, datasets:[
-      { data, backgroundColor: colors },
-      { // dataset “pontos” para posicionar os balões
-        type:'scatter',
-        data:[
-          {x: dupIndex, y: data[dupIndex]},
-          {x: dupIndex, y: data[dupIndex]}
-        ],
-        pointRadius:0
-      }
-    ]},
+    data:{ labels, datasets:[{ data, backgroundColor: colors }] },
     options:{
       plugins:{
         legend:{display:false},
         datalabels:{
-          formatter:(v,ctx)=>{
-            if(ctx.datasetIndex===0) return 'R$ ' + (Number(v)||0).toLocaleString('pt-BR');
-            if(ctx.datasetIndex===1){
-              if(ctx.dataIndex===0 && comAF)  return 'Com AF: '  + brlFull(comAF[7]);
-              if(ctx.dataIndex===1 && semAF)  return 'Sem AF: '  + brlFull(semAF[7]);
-              return null;
-            }
-          },
-          align:(ctx)=> ctx.datasetIndex===0 ? 'end' : 'top',
-          anchor:(ctx)=> ctx.datasetIndex===0 ? 'end' : 'end',
-          // desloca os balões para cima e para lados diferentes
-          offset:(ctx)=>{
-            if(ctx.datasetIndex===1){
-              return ctx.dataIndex===0 ? -28 : -58;
-            }
-            return 0;
-          },
-          backgroundColor:(ctx)=> ctx.datasetIndex===1 ? C_CINZA_ESCURO : null,
-          color:(ctx)=> ctx.datasetIndex===1 ? '#fff' : '#000',
-          borderRadius:(ctx)=> ctx.datasetIndex===1 ? 12 : 0,
-          padding:(ctx)=> ctx.datasetIndex===1 ? {top:5,right:8,bottom:5,left:8} : 0,
-          font:(ctx)=> ctx.datasetIndex===1 ? {weight:'800',size:11} : {weight:'700',size:14},
-          clip:false
+          formatter:(v)=> 'R$ ' + (Number(v)||0).toLocaleString('pt-BR'),
+          align:'end', anchor:'end', color:'#000', font:{weight:'700', size:14}
         },
         tooltip:{ callbacks:{ label:(c)=> 'R$ ' + (Number(c.parsed.y)||0).toLocaleString('pt-BR') } }
       },
-      layout:{ padding:{ top:28, right:28, left:10 } },
+      layout:{ padding:{ top:20, right:260 } }, /* espaço para a mini-tabela */
       scales:{
         x:{ grid:{display:false} },
         y:{ grid:{display:false}, ticks:{display:false}, beginAtZero:true, suggestedMax: Math.max(...data)*1.2 }
       }
     },
-    plugins:[ChartDataLabels, dupArrowsPlugin]
+    plugins:[ChartDataLabels]
   });
-
-  // Referências para o plugin das setas
-  const metaBars = chartPrincipal.getDatasetMeta(0);
-  const metaBalloons = chartPrincipal.getDatasetMeta(1);
-  const fromElem = metaBars.data[dupIndex];
-  chartPrincipal.$dupArrows = {
-    from: { x: fromElem.x, y: fromElem.y-6 },
-    targets: metaBalloons.data.map((p,i)=>({ x:p.x + (i===0?-18:18), y:p.y - (i===0?34:64) })) // ajusta direção
-  };
 
   document.getElementById('dbPrincipal').textContent = 'Data-base: ' + toBRDate(total && total[6]);
 }
@@ -661,7 +610,7 @@ function bootDashboard(){
     .catch(err=> alert('Erro ao carregar JSON: ' + err.message));
 }
 
-Chart.register(ChartDataLabels, dupArrowsPlugin);
+Chart.register(ChartDataLabels);
 window.addEventListener('DOMContentLoaded', prepLoginUI);
 </script>
 </body>
