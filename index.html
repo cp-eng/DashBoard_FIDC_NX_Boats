@@ -118,8 +118,9 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tabbtn active" data-target="#page1">Página 1 — Resumo</button>
-    <button class="tabbtn" data-target="#page2">Página 2 — Monitoramento, Clientes e Receita</button>
+    <button class="tabbtn active" data-target="#page1" id="tab1">Página 1 — Resumo</button>
+    <button class="tabbtn" data-target="#page2" id="tab2">Página 2 — Monitoramento</button>
+    <button class="tabbtn" data-target="#page3" id="tab3">Página 3 — Receita</button>
   </div>
 
   <!-- ===== PAGE 1 ===== -->
@@ -257,8 +258,12 @@
           <tbody></tbody>
         </table>
       </div>
+    </div>
+  </section>
 
-      <!-- Receita Naval Serviços Financeiros -->
+  <!-- ===== PAGE 3 ===== -->
+  <section id="page3" class="page">
+    <div class="wrap grid">
       <div class="card col-12">
         <div class="band">Receita Naval Serviços Financeiros</div>
         <canvas id="chartReceita" height="160"></canvas>
@@ -271,26 +276,82 @@
 /* =========================
    LOGIN / AUTENTICAÇÃO
    ========================= */
-const USER_EXPECTED = 'fidcnxboats';
-const PASS_EXPECTED = 'fidcnxb2025';
-const REMEMBER_KEY  = 'nxAuth';
-const REMEMBER_TTL  = 30 * 24 * 60 * 60 * 1000;
+// Níveis: 'basic' (duas páginas) | 'full' (três páginas)
+const CREDS = {
+  basic: { user:'fidcnxboats', pass:'fidcnxb2025' },
+  full:  { user:'Seteasset',   pass:'asset2025'  }
+};
+const REMEMBER_KEY = 'nxAuth';
+const REMEMBER_TTL = 30 * 24 * 60 * 60 * 1000; // 30 dias
 
-function rememberNow(){ localStorage.setItem(REMEMBER_KEY, JSON.stringify({ok:true, ts:Date.now()})); }
-function isRemembered(){ try{ const o=JSON.parse(localStorage.getItem(REMEMBER_KEY)||'null'); return o && o.ok && (Date.now()-o.ts)<REMEMBER_TTL; }catch(e){ return false; } }
-function showApp(){ document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; bootDashboard(); }
-function handleLogin(){
-  const u=document.getElementById('user').value.trim();
-  const p=document.getElementById('pass').value.trim();
-  const remember=document.getElementById('remember').checked;
-  const err=document.getElementById('loginError');
-  if(u===USER_EXPECTED && p===PASS_EXPECTED){ err.style.display='none'; if(remember) rememberNow(); showApp(); } else err.style.display='block';
+function rememberNow(level){
+  localStorage.setItem(REMEMBER_KEY, JSON.stringify({ok:true, ts:Date.now(), level}));
 }
+function readRemember(){
+  try{
+    const raw = localStorage.getItem(REMEMBER_KEY);
+    if(!raw) return null;
+    const obj = JSON.parse(raw);
+    if(!obj || !obj.ok || !obj.ts) return null;
+    if(Date.now()-obj.ts > REMEMBER_TTL) return null;
+    // retrocompatibilidade: se não houver level, assume básico
+    return { level: obj.level || 'basic' };
+  }catch(e){ return null; }
+}
+function clearRemember(){ localStorage.removeItem(REMEMBER_KEY); }
+
+function showApp(level){
+  // controla visibilidade da aba/página 3
+  const tab3 = document.getElementById('tab3');
+  const page3 = document.getElementById('page3');
+  const allowFull = (level === 'full');
+
+  tab3.style.display = allowFull ? 'inline-block' : 'none';
+  if(!allowFull){
+    page3.classList.remove('active'); // garante que não fique ativa
+    // se o usuário estava na página 3 (ex.: refresh), ativa a 1
+    document.getElementById('page1').classList.add('active');
+    document.getElementById('tab1').classList.add('active');
+    document.getElementById('tab2').classList.remove('active');
+  }
+
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+
+  setupTabs();      // tabs dependem da presença/ausência da tab3
+  bootDashboard();  // carrega dados
+}
+
+function handleLogin(){
+  const u = document.getElementById('user').value.trim();
+  const p = document.getElementById('pass').value.trim();
+  const remember = document.getElementById('remember').checked;
+  const err = document.getElementById('loginError');
+
+  let level = null;
+  if(u===CREDS.full.user && p===CREDS.full.pass) level = 'full';
+  else if(u===CREDS.basic.user && p===CREDS.basic.pass) level = 'basic';
+
+  if(level){
+    err.style.display='none';
+    if(remember) rememberNow(level); else clearRemember();
+    showApp(level);
+  }else{
+    err.style.display='block';
+  }
+}
+
 function prepLoginUI(){
   document.getElementById('btnEnter').addEventListener('click', handleLogin);
-  document.getElementById('btnClear').addEventListener('click', ()=>{ document.getElementById('user').value=''; document.getElementById('pass').value=''; document.getElementById('loginError').style.display='none'; });
-  document.getElementById('pass').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
-  if(isRemembered()) showApp();
+  document.getElementById('btnClear').addEventListener('click', ()=>{
+    document.getElementById('user').value='';
+    document.getElementById('pass').value='';
+    document.getElementById('loginError').style.display='none';
+  });
+  document.getElementById('pass').addEventListener('keydown', (e)=>{ if(e.key==='Enter') handleLogin(); });
+
+  const remembered = readRemember();
+  if(remembered) showApp(remembered.level);
 }
 
 /* =========================
@@ -323,13 +384,16 @@ function parseNew(rows){
    ========================= */
 function setupTabs(){
   document.querySelectorAll('.tabbtn').forEach(btn=>{
+    if(btn.style.display==='none') return; // ignora tabs ocultas
     btn.addEventListener('click', ()=>{
+      // limpa estados
       document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active'));
       document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      // ativa selecionados
       btn.classList.add('active');
       const target=document.querySelector(btn.dataset.target);
       if(target) target.classList.add('active');
-    });
+    }, { once:false });
   });
 }
 
@@ -354,7 +418,7 @@ function commonBarOptions(maxVal){
 /* =========================
    PÁGINA 1 (A + referências de B)
    ========================= */
-let chartPrincipal, chartShare, chartReceber;
+let chartPrincipal, chartShare, chartReceber, chartReceita;
 
 function renderPage1(sections){
   const {A,B} = sections;
@@ -364,16 +428,16 @@ function renderPage1(sections){
   document.getElementById('kpiPL').textContent = pl? brlFull(pl[7]) : '–';
   document.getElementById('dbPL').textContent  = 'Data-base: ' + toBRDate(pl && pl[6]);
 
-  // **Caixa total (correção)**
+  // Caixa total
   const caixaTot = A.find('(=) Caixa e Disponibilidades');
   document.getElementById('kpiCaixa').textContent = caixaTot ? brlFull(caixaTot[7]) : '–';
   document.getElementById('dbCaixa').textContent  = 'Data-base: ' + toBRDate(caixaTot && caixaTot[6]);
 
-  // Índice de Subordinação (B → Cotas Sênior)
+  // Índice de Subordinação (B)
   const idxSenior = B.find('Índice de Subordinação Cotas Sênior') || B.find('Índice de Subordinação Cotas Sênior ');
   document.getElementById('kpiSubInline').textContent = idxSenior? pct1(idxSenior[7]) : '–';
 
-  // Valor Disponível p/ Risco Sacado (B → % de PL Alocado em Risco Sacado, col 9)
+  // Valor Disponível p/ Risco Sacado (B → col 9)
   const riscoDisp = B.find('% de PL Alocado em Risco Sacado');
   document.getElementById('kpiRisco').textContent = riscoDisp? brlFull(riscoDisp[9]) : '–';
   const principalDate = A.find('(=) Principal Alocado');
@@ -485,12 +549,11 @@ function renderPrazo_A(A){
 }
 
 /* =========================
-   PÁGINA 2 (B, C, D)
+   PÁGINA 2 (B, C)
    ========================= */
 function renderPage2(sections){
   renderMonit_B(sections.B);
   renderClientes_C(sections.C);
-  renderReceita_D(sections.D);
 }
 
 function renderMonit_B(B){
@@ -581,13 +644,19 @@ function renderClientes_C(C){
   });
 }
 
-let chartReceita;
+/* =========================
+   PÁGINA 3 (D)
+   ========================= */
+function renderPage3(sections){
+  renderReceita_D(sections.D);
+}
 function renderReceita_D(D){
   const rows = (D.rows||[]).filter(r => r[4] && r[7]!=null);
   const labels = rows.map(r => (r[4]||'').trim());
   const data   = rows.map(r => Number(r[7])||0);
 
   const ctx=document.getElementById('chartReceita');
+  if(!ctx) return; // caso usuário básico (sem canvas)
   if(chartReceita) chartReceita.destroy();
   chartReceita = new Chart(ctx,{
     type:'bar',
@@ -609,7 +678,6 @@ function renderReceita_D(D){
    LOAD
    ========================= */
 function bootDashboard(){
-  setupTabs();
   const bust=`?v=${Date.now()}`;
   fetch(DEFAULT_JSON + bust)
     .then(r=>{ if(!r.ok) throw new Error('Falha ao ler JSON'); return r.json(); })
@@ -617,6 +685,10 @@ function bootDashboard(){
       const sections=parseNew(raw);
       renderPage1(sections);
       renderPage2(sections);
+      // Se a aba 3 estiver disponível (usuário completo), renderiza a Page 3
+      if(document.getElementById('tab3').style.display !== 'none'){
+        renderPage3(sections);
+      }
     })
     .catch(err=> alert('Erro ao carregar JSON: ' + err.message));
 }
